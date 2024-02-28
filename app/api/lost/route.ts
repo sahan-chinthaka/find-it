@@ -1,13 +1,10 @@
 import { authOptions } from "@/lib/auth-config";
-import { LostItemSchema } from "@/schema/lost";
 import prisma from "@/lib/prisma";
+import { LostItemSchema } from "@/schema/lost";
+import { GoogleGenerativeAI, Part } from "@google/generative-ai";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { GoogleGenerativeAI, Part } from "@google/generative-ai";
-import path from "path";
-import { mkdir, writeFile } from "fs/promises";
-import fs from "fs";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_KEY as string);
 
@@ -20,7 +17,7 @@ interface LostData {
 async function runWithImages(imageParts: Part[], lost_data: LostData) {
 	const model = genAI.getGenerativeModel({ model: "gemini-pro-vision" });
 
-	const prompt = `Please create a list of keywords to help find this lost item. Consider the title, description, type, images (including any recognizable text). Emphasize unique or distinguishing features. Title is '${lost_data.title}'. Description is '${lost_data.description}'. Type is '${lost_data.type}' Make keywords singular and do not use any character to seperate keywords. Do not generate unnecessary keywords. Give each keyword in a new line. You can add brands, colors, serial numbers if you can clearly identify. Here are some images of lost item.`;
+	const prompt = `Please create a list of keywords to help find this lost item. Consider the title, description, images (including any recognizable text). Emphasize unique or distinguishing features. Title is '${lost_data.title}'. Description is '${lost_data.description}'. Make keywords singular and do not use any character to seperate keywords. Do not generate unnecessary keywords. Give each keyword in a new line. You can add brands, colors, serial numbers if you can clearly identify. Here are some images of lost item.`;
 
 	const result = await model.generateContent([prompt, ...imageParts]);
 	const response = result.response;
@@ -51,8 +48,6 @@ export async function PUT(req: NextRequest) {
 			}
 		}
 
-		const tasks: Promise<any>[] = [];
-
 		if (imageParts.length >= 1) {
 			const keywords = await runWithImages(imageParts, {
 				title: data.get("title") as string,
@@ -69,6 +64,7 @@ export async function PUT(req: NextRequest) {
 					},
 				},
 			});
+			return NextResponse.json({ message: "done", keywords });
 		}
 		return NextResponse.json({ message: "done" });
 	} catch (e) {
