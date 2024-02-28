@@ -17,7 +17,7 @@ import { LostItemSchema } from "@/schema/lost";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { CalendarIcon, Check, ChevronsUpDown } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -31,6 +31,8 @@ function NewLostPage() {
 		},
 	});
 	const { toast } = useToast();
+	const formElem = useRef<HTMLFormElement | null>(null);
+	const [disable, setDisable] = useState(false);
 
 	useEffect(() => {
 		if (navigator.geolocation) {
@@ -72,20 +74,36 @@ function NewLostPage() {
 	}, []);
 
 	function onSubmit(values: z.infer<typeof LostItemSchema>) {
+		setDisable(true);
 		fetch("/api/lost", {
 			method: "POST",
 			body: JSON.stringify(values),
 		})
 			.then((res) => res.json())
 			.then((res) => {
-				console.log(res);
+				if (formElem.current) {
+					const form_data = new FormData(formElem.current);
+					form_data.append("id", res["id"]);
+
+					fetch("/api/lost", {
+						method: "PUT",
+						body: form_data,
+					})
+						.then((res) => res.json())
+						.then((res) => {
+							console.log(res);
+						})
+						.finally(() => {
+							setDisable(false);
+						});
+				}
 			});
 	}
 
 	return (
 		<div className="max-w-[450px] mx-auto p-4 rounded shadow-md">
 			<Form {...form}>
-				<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+				<form ref={formElem} onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
 					<FormField
 						control={form.control}
 						name="title"
@@ -231,11 +249,13 @@ function NewLostPage() {
 					<FormItem>
 						<FormLabel>Images</FormLabel>
 						<FormControl>
-							<Input type="file" />
+							<Input id="images" name="images" accept="image/*" multiple type="file" />
 						</FormControl>
 						<FormMessage />
 					</FormItem>
-					<Button type="submit">Submit</Button>
+					<Button disabled={disable} type="submit">
+						Submit
+					</Button>
 				</form>
 			</Form>
 		</div>
