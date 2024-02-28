@@ -6,7 +6,15 @@
 		"dev": "next dev",
 		"build": "next build",
 		"start": "next start",
-		"lint": "next lint"
+		"lint": "next lint",
+		"migrate:deploy": "dotenv -e .env.production.local -- npx prisma migrate deploy",
+		"migrate:dev": "dotenv -e .env.development.local -- npx prisma migrate dev",
+		"generate:deploy": "dotenv -e .env.production.local -- npx prisma generate",
+		"generate:dev": "dotenv -e .env.development.local -- npx prisma generate",
+		"studio:deploy": "dotenv -e .env.production.local -- npx prisma studio",
+		"studio:dev": "dotenv -e .env.development.local -- npx prisma studio",
+		"push:dev": "dotenv -e .env.development.local -- npx prisma db push",
+		"push:deploy": "dotenv -e .env.production.local -- npx prisma db push"
 	},
 	"dependencies": {
 		"@google/generative-ai": "^0.2.1",
