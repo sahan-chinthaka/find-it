@@ -54,43 +54,22 @@ export async function PUT(req: NextRequest) {
 		const tasks: Promise<any>[] = [];
 
 		if (imageParts.length >= 1) {
-			tasks.push(
-				runWithImages(imageParts, {
-					title: data.get("title") as string,
-					description: data.get("description") as string,
-					type: data.get("type") as string,
-				}).then(async (keywords) => {
-					await prisma.lostItem.update({
-						where: {
-							id: lostID?.toString(),
-						},
-						data: {
-							keywords: {
-								create: keywords.map((a) => ({ value: a })),
-							},
-						},
-					});
-				})
-			);
-		}
-
-		const dir = path.join(process.cwd(), "temp/lost/" + lostID);
-		if (images.length > 0) fs.mkdirSync(dir, { recursive: true });
-
-		images.forEach((i, k) => {
-			tasks.push(writeFile(dir + "/" + k + ".png", i));
-		});
-		
-		await Promise.all(tasks);
-		if (images.length >= 1)
+			const keywords = await runWithImages(imageParts, {
+				title: data.get("title") as string,
+				description: data.get("description") as string,
+				type: data.get("type") as string,
+			});
 			await prisma.lostItem.update({
 				where: {
-					id: lostID as string,
+					id: lostID?.toString(),
 				},
 				data: {
-					images: images.length,
+					keywords: {
+						create: keywords.map((a) => ({ value: a })),
+					},
 				},
 			});
+		}
 		return NextResponse.json({ message: "done" });
 	} catch (e) {
 		return NextResponse.json({ error: true, message: e });
