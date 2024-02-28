@@ -14,16 +14,17 @@ datasource db {
 }
 
 model User {
-   id            String    @id @default(uuid())
+   id            String     @id @default(uuid())
    name          String?
-   uname         String?   @unique
-   email         String?   @unique
-   emailVerified DateTime? @map("email_verified")
+   uname         String?    @unique
+   email         String?    @unique
+   emailVerified DateTime?  @map("email_verified")
    image         String?
-   createdAt     DateTime  @default(now())
-   updatedAt     DateTime  @updatedAt
+   createdAt     DateTime   @default(now())
+   updatedAt     DateTime   @updatedAt
    password      String?
    accounts      Account[]
+   LostItem      LostItem[]
 
    @@map("users")
 }
@@ -46,4 +47,26 @@ model Account {
 
    @@unique([provider, providerAccountId])
    @@map("accounts")
+}
+
+model LostItem {
+   id          String    @id @default(cuid())
+   title       String
+   description String
+   type        String
+   location    String?
+   date        DateTime  @default(now())
+   user        User      @relation(fields: [userId], references: [id])
+   userId      String
+   hashes      HashTag[]
+   images      Int       @default(0)
+   createdAt   DateTime  @default(now())
+   updatedAt   DateTime  @updatedAt
+}
+
+model HashTag {
+   id         String    @id @default(cuid())
+   value      String
+   LostItem   LostItem? @relation(fields: [lostItemId], references: [id])
+   lostItemId String?
 }
