@@ -74,10 +74,8 @@ export async function PUT(req: NextRequest) {
 			);
 		}
 
-		const dir = path.join(process.cwd(), "/public/uploads/lost/" + lostID);
-		if (images.length > 0) {
-			fs.mkdirSync(dir, { recursive: true });
-		}
+		const dir = path.join(process.cwd(), "public/uploads/lost/" + lostID);
+		if (images.length > 0) await mkdir(dir);
 
 		images.forEach((i, k) => {
 			tasks.push(writeFile(dir + "/" + k + ".png", i));
