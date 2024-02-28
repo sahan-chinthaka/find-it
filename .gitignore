@@ -41,3 +41,4 @@ next-env.d.ts
 /public/uploads/found/*
 !/public/uploads/found/test.html
 .vercel
+temp

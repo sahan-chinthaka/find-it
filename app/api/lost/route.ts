@@ -74,12 +74,13 @@ export async function PUT(req: NextRequest) {
 			);
 		}
 
-		const dir = path.join(process.cwd(), "public/uploads/lost/" + lostID);
-		if (images.length > 0) await mkdir(dir);
+		const dir = path.join(process.cwd(), "temp/lost/" + lostID);
+		if (images.length > 0) fs.mkdirSync(dir, { recursive: true });
 
 		images.forEach((i, k) => {
 			tasks.push(writeFile(dir + "/" + k + ".png", i));
 		});
+		
 		await Promise.all(tasks);
 		if (images.length >= 1)
 			await prisma.lostItem.update({
