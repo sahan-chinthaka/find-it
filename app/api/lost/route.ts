@@ -74,15 +74,9 @@ export async function PUT(req: NextRequest) {
 			);
 		}
 
-		const dir = path.join(process.cwd(), "public/uploads/lost/" + lostID);
-		if (!fs.existsSync(path.join(process.cwd(), "public/uploads"))) {
-			fs.mkdirSync(path.join(process.cwd(), "public/uploads"));
-			if (!fs.existsSync(path.join(process.cwd(), "public/uploads/lost"))) {
-				fs.mkdirSync(path.join(process.cwd(), "public/uploads/lost"));
-			}
-		}
+		const dir = path.join(process.cwd(), "/public/uploads/lost/" + lostID);
 		if (images.length > 0) {
-			fs.mkdirSync(dir);
+			fs.mkdirSync(dir, { recursive: true });
 		}
 
 		images.forEach((i, k) => {
