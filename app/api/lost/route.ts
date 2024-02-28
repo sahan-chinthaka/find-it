@@ -7,6 +7,7 @@ import { z } from "zod";
 import { GoogleGenerativeAI, Part } from "@google/generative-ai";
 import path from "path";
 import { mkdir, writeFile } from "fs/promises";
+import fs from "fs";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_KEY as string);
 
@@ -76,7 +77,9 @@ export async function PUT(req: NextRequest) {
 		}
 
 		const dir = path.join(process.cwd(), "public/uploads/lost/" + lostID);
-		if (images.length > 0) await mkdir(dir);
+		if (images.length > 0) {
+			fs.mkdirSync(dir, { recursive: true });
+		}
 
 		images.forEach((i, k) => {
 			tasks.push(writeFile(dir + "/" + k + ".png", i));
