@@ -60,8 +60,6 @@ export async function PUT(req: NextRequest) {
 					description: data.get("description") as string,
 					type: data.get("type") as string,
 				}).then(async (keywords) => {
-					console.log("Keywords", keywords);
-					console.log("ID", lostID);
 					await prisma.lostItem.update({
 						where: {
 							id: lostID?.toString(),
@@ -77,8 +75,14 @@ export async function PUT(req: NextRequest) {
 		}
 
 		const dir = path.join(process.cwd(), "public/uploads/lost/" + lostID);
+		if (!fs.existsSync(path.join(process.cwd(), "public/uploads"))) {
+			fs.mkdirSync(path.join(process.cwd(), "public/uploads"));
+			if (!fs.existsSync(path.join(process.cwd(), "public/uploads/lost"))) {
+				fs.mkdirSync(path.join(process.cwd(), "public/uploads/lost"));
+			}
+		}
 		if (images.length > 0) {
-			fs.mkdirSync(dir, { recursive: true });
+			fs.mkdirSync(dir);
 		}
 
 		images.forEach((i, k) => {
