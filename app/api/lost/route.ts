@@ -2,6 +2,7 @@ import { authOptions } from "@/lib/auth-config";
 import prisma from "@/lib/prisma";
 import { LostItemSchema } from "@/schema/lost";
 import { GoogleGenerativeAI, Part } from "@google/generative-ai";
+import { put } from "@vercel/blob";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
@@ -29,15 +30,26 @@ export async function PUT(req: NextRequest) {
 	const data = await req.formData();
 	const lostID = data.get("id");
 
-	const images = [];
+	const imagesUpload = [];
 	const imageParts: Part[] = [];
 	try {
+		if (!lostID) {
+			throw new Error("Lost id is not present");
+		}
+
+		let count = 0;
 		for (const [k, v] of data.entries()) {
 			if (k == "images") {
 				let file = v as File;
 				if (file.size > 0) {
 					const buffer = Buffer.from(await file.arrayBuffer());
-					images.push(buffer);
+					imagesUpload.push(
+						put(lostID.toString() + "-" + count++, file, {
+							access: "public",
+							contentType: file.type,
+						})
+					);
+					console.log(file);
 					imageParts.push({
 						inlineData: {
 							data: buffer.toString("base64"),
@@ -64,8 +76,16 @@ export async function PUT(req: NextRequest) {
 					},
 				},
 			});
-			return NextResponse.json({ message: "done", keywords });
 		}
+		await Promise.all(imagesUpload);
+		await prisma.lostItem.update({
+			where: {
+				id: lostID.toString(),
+			},
+			data: {
+				images: imagesUpload.length,
+			},
+		});
 		return NextResponse.json({ message: "done" });
 	} catch (e) {
 		return NextResponse.json({ error: true, message: e });
