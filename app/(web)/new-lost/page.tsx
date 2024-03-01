@@ -83,19 +83,21 @@ function NewLostPage() {
 			.then((res) => {
 				if (formElem.current) {
 					const form_data = new FormData(formElem.current);
-					form_data.append("id", res["id"]);
 
-					fetch("/api/lost", {
-						method: "PUT",
-						body: form_data,
-					})
-						.then((res) => res.json())
-						.then((res) => {
-							console.log(res);
+					if (res.id) {
+						form_data.append("id", res["id"]);
+						fetch("/api/lost", {
+							method: "PUT",
+							body: form_data,
 						})
-						.finally(() => {
-							setDisable(false);
-						});
+							.then((res) => res.json())
+							.then((res) => {
+								console.log(res);
+							})
+							.finally(() => {
+								setDisable(false);
+							});
+					}
 				}
 			});
 	}

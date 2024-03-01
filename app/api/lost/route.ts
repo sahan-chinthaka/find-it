@@ -121,3 +121,20 @@ export async function POST(req: NextRequest) {
 		}
 	}
 }
+export async function GET() {
+	const session = await getServerSession(authOptions);
+
+	try {
+		if (!session?.user.uid) throw new Error("User not found");
+
+		const items = await prisma.lostItem.findMany({
+			where: {
+				userId: session.user.uid,
+			},
+		});
+
+		return NextResponse.json(items);
+	} catch (e: any) {
+		return NextResponse.json({ error: true, message: e.message });
+	}
+}
