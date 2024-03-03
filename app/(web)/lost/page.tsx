@@ -15,7 +15,7 @@ async function LostPage() {
 		<div>
 			<Link className="text-blue-500" href={"/new-lost"}>New lost</Link>
 			{data.map((a: any) => (
-				<div className="p-2 m-2 bg-slate-200">
+				<div key={a.id} className="p-2 m-2 bg-slate-200">
 					<p>{a.title}</p>
 					<p>{a.description}</p>
 					<p><Link className="text-blue-500" href={"/lost/" + a.id}>Details</Link></p>

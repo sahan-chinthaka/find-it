@@ -49,7 +49,6 @@ export async function PUT(req: NextRequest) {
 							contentType: file.type,
 						})
 					);
-					console.log(file);
 					imageParts.push({
 						inlineData: {
 							data: buffer.toString("base64"),
