@@ -2,6 +2,7 @@ import { authOptions } from "@/lib/auth-config";
 import prisma from "@/lib/prisma";
 import { LostItemSchema } from "@/schema/lost";
 import { GoogleGenerativeAI, Part } from "@google/generative-ai";
+import { put } from "@vercel/blob";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
@@ -17,7 +18,7 @@ interface LostData {
 async function runWithImages(imageParts: Part[], lost_data: LostData) {
 	const model = genAI.getGenerativeModel({ model: "gemini-pro-vision" });
 
-	const prompt = `Please create a list of keywords to help find this lost item. Consider the title, description, images (including any recognizable text). Emphasize unique or distinguishing features. Title is '${lost_data.title}'. Description is '${lost_data.description}'. Make keywords singular and do not use any character to seperate keywords. Do not generate unnecessary keywords. Give each keyword in a new line. You can add brands, colors, serial numbers if you can clearly identify. Here are some images of lost item.`;
+	const prompt = `Please create a list of keywords to help find this lost item. Consider the title, description, images (including any recognizable text). Emphasize unique or distinguishing features. Title is '${lost_data.title}'. Description is '${lost_data.description}'. Make keywords singular and do not use any character to seperate keywords. Do not generate unnecessary keywords. Give each keyword in a new line. You can add brands, colors, serial numbers if you can clearly identify. Here are some images of lost item. Limit the keywords to 10.`;
 
 	const result = await model.generateContent([prompt, ...imageParts]);
 	const response = result.response;
@@ -29,15 +30,25 @@ export async function PUT(req: NextRequest) {
 	const data = await req.formData();
 	const lostID = data.get("id");
 
-	const images = [];
+	const imagesUpload = [];
 	const imageParts: Part[] = [];
 	try {
+		if (!lostID) {
+			throw new Error("Lost id is not present");
+		}
+
+		let count = 0;
 		for (const [k, v] of data.entries()) {
 			if (k == "images") {
 				let file = v as File;
 				if (file.size > 0) {
 					const buffer = Buffer.from(await file.arrayBuffer());
-					images.push(buffer);
+					imagesUpload.push(
+						put(lostID.toString() + "-" + count++, file, {
+							access: "public",
+							contentType: file.type,
+						})
+					);
 					imageParts.push({
 						inlineData: {
 							data: buffer.toString("base64"),
@@ -64,8 +75,16 @@ export async function PUT(req: NextRequest) {
 					},
 				},
 			});
-			return NextResponse.json({ message: "done", keywords });
 		}
+		await Promise.all(imagesUpload);
+		await prisma.lostItem.update({
+			where: {
+				id: lostID.toString(),
+			},
+			data: {
+				images: imagesUpload.length,
+			},
+		});
 		return NextResponse.json({ message: "done" });
 	} catch (e) {
 		return NextResponse.json({ error: true, message: e });
@@ -74,7 +93,8 @@ export async function PUT(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
 	try {
-		const data = LostItemSchema.parse(await req.json());
+		const json = await req.json();
+		const data = LostItemSchema.parse(json);
 		const session = await getServerSession(authOptions);
 
 		if (session?.user.uid) {
@@ -86,6 +106,14 @@ export async function POST(req: NextRequest) {
 					location: data.location,
 					date: data.date,
 					userId: session?.user.uid,
+					places: {
+						create: json.places.map((a: any) => ({
+							id: a.place_id,
+							description: a.description,
+							lat: a.lat,
+							lng: a.lng,
+						})),
+					},
 				},
 			});
 			return NextResponse.json(item);
@@ -99,5 +127,22 @@ export async function POST(req: NextRequest) {
 		} else {
 			return NextResponse.json({ error: true, message: e });
 		}
+	}
+}
+export async function GET() {
+	const session = await getServerSession(authOptions);
+
+	try {
+		if (!session?.user.uid) throw new Error("User not found");
+
+		const items = await prisma.lostItem.findMany({
+			where: {
+				userId: session.user.uid,
+			},
+		});
+
+		return NextResponse.json(items);
+	} catch (e: any) {
+		return NextResponse.json({ error: true, message: e.message });
 	}
 }

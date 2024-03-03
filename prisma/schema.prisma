@@ -15,17 +15,18 @@ datasource db {
 }
 
 model User {
-   id            String     @id @default(uuid())
+   id            String      @id @default(uuid())
    name          String?
-   uname         String?    @unique
-   email         String?    @unique
-   emailVerified DateTime?  @map("email_verified")
+   uname         String?     @unique
+   email         String?     @unique
+   emailVerified DateTime?   @map("email_verified")
    image         String?
-   createdAt     DateTime   @default(now())
-   updatedAt     DateTime   @updatedAt
+   createdAt     DateTime    @default(now())
+   updatedAt     DateTime    @updatedAt
    password      String?
    accounts      Account[]
    LostItem      LostItem[]
+   FoundItem     FoundItem[]
 
    @@map("users")
 }
@@ -56,6 +57,7 @@ model LostItem {
    description String
    type        String
    location    String?
+   places      Place[]
    date        DateTime  @default(now())
    user        User      @relation(fields: [userId], references: [id])
    userId      String
@@ -65,9 +67,38 @@ model LostItem {
    updatedAt   DateTime  @updatedAt
 }
 
+model FoundItem {
+   id          String    @id @default(cuid())
+   title       String
+   description String
+   type        String
+   location    String?
+   place       Place     @relation(fields: [placeId], references: [id], onDelete: Cascade)
+   date        DateTime  @default(now())
+   user        User      @relation(fields: [userId], references: [id])
+   userId      String
+   keywords    Keyword[]
+   images      Int       @default(0)
+   createdAt   DateTime  @default(now())
+   updatedAt   DateTime  @updatedAt
+   placeId     String
+}
+
 model Keyword {
-   id         String    @id @default(cuid())
-   value      String
-   LostItem   LostItem? @relation(fields: [lostItemId], references: [id])
-   lostItemId String?
+   id          String     @id @default(cuid())
+   value       String
+   LostItem    LostItem?  @relation(fields: [lostItemId], references: [id], onDelete: Cascade)
+   lostItemId  String?
+   FoundItem   FoundItem? @relation(fields: [foundItemId], references: [id], onDelete: Cascade)
+   foundItemId String?
+}
+
+model Place {
+   id          String      @id @default(cuid())
+   lat         Decimal
+   lng         Decimal
+   description String
+   FoundItem   FoundItem[]
+   LostItem    LostItem?   @relation(fields: [lostItemId], references: [id], onDelete: Cascade)
+   lostItemId  String?
 }

@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const LostItemSchema = z.object({
+export const FoundItemSchema = z.object({
 	title: z.string().min(3, {
 		message: "Title must be at least 3 characters.",
 	}),
@@ -10,6 +10,8 @@ export const LostItemSchema = z.object({
 	type: z.string({
 		required_error: "Please select a type",
 	}),
-	location: z.string().optional(),
+	location: z.string().min(1, {
+		message: "Enter a location"
+	}),
 	date: z.coerce.date(),
 });
