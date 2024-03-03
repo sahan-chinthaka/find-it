@@ -10,6 +10,6 @@ export const LostItemSchema = z.object({
 	type: z.string({
 		required_error: "Please select a type",
 	}),
-	location: z.string(),
+	location: z.string().optional(),
 	date: z.coerce.date(),
 });

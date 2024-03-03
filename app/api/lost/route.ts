@@ -93,7 +93,8 @@ export async function PUT(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
 	try {
-		const data = LostItemSchema.parse(await req.json());
+		const json = await req.json();
+		const data = LostItemSchema.parse(json);
 		const session = await getServerSession(authOptions);
 
 		if (session?.user.uid) {
@@ -105,6 +106,14 @@ export async function POST(req: NextRequest) {
 					location: data.location,
 					date: data.date,
 					userId: session?.user.uid,
+					places: {
+						create: json.places.map((a: any) => ({
+							id: a.place_id,
+							description: a.description,
+							lat: a.lat,
+							lng: a.lng,
+						})),
+					},
 				},
 			});
 			return NextResponse.json(item);

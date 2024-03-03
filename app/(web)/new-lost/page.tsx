@@ -1,83 +1,59 @@
 "use client";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { ToastAction } from "@/components/ui/toast";
-import { useToast } from "@/components/ui/use-toast";
-import { Cities, City } from "@/lib/cities";
 import { itemTypes } from "@/lib/item-types";
-import { cn, distance } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { LostItemSchema } from "@/schema/lost";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { APIProvider, Map, Marker } from "@vis.gl/react-google-maps";
 import { format } from "date-fns";
-import { CalendarIcon, Check, ChevronsUpDown } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { CalendarIcon } from "lucide-react";
+import { Fragment, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
+import usePlacesAutocomplete, { LatLng, getGeocode, getLatLng } from "use-places-autocomplete";
 import { z } from "zod";
 
+interface Place {
+	place_id: string;
+	description: string;
+	lat: number;
+	lng: number;
+}
+
 function NewLostPage() {
+	const [places, setPlaces] = useState<Place[]>([]);
+
+	const autoComplete = usePlacesAutocomplete({
+		debounce: 300,
+	});
+
 	const form = useForm<z.infer<typeof LostItemSchema>>({
 		resolver: zodResolver(LostItemSchema),
 		defaultValues: {
 			title: "",
 			description: "",
 			location: "",
+			type: "",
+			date: new Date(),
 		},
 	});
-	const { toast } = useToast();
+
 	const formElem = useRef<HTMLFormElement | null>(null);
 	const [disable, setDisable] = useState(false);
-
-	useEffect(() => {
-		if (navigator.geolocation) {
-			navigator.geolocation.getCurrentPosition(
-				(pos) => {
-					let min = Infinity;
-					let c: City | undefined;
-					for (const city of Cities) {
-						const d = distance(city.latitude, city.longitude, pos.coords.latitude, pos.coords.longitude, null);
-						if (d < min) {
-							min = d;
-							c = city;
-						}
-					}
-
-					if (c) {
-						toast({
-							title: "Nearest Location Found",
-							description: `Set '${c.name}' as your lost location?`,
-							action: (
-								<ToastAction
-									altText="Set location"
-									onClick={() => {
-										form.setValue("location", c?.name ?? "");
-									}}
-								>
-									Yes
-								</ToastAction>
-							),
-						});
-					}
-				},
-				null,
-				{
-					enableHighAccuracy: true,
-				}
-			);
-		}
-	}, []);
+	const [location, setLocation] = useState<LatLng>();
 
 	function onSubmit(values: z.infer<typeof LostItemSchema>) {
 		setDisable(true);
 		fetch("/api/lost", {
 			method: "POST",
-			body: JSON.stringify(values),
+			body: JSON.stringify({ ...values, places }),
 		})
 			.then((res) => res.json())
 			.then((res) => {
@@ -113,7 +89,7 @@ function NewLostPage() {
 							<FormItem>
 								<FormLabel>What did you lost?</FormLabel>
 								<FormControl>
-									<Input placeholder="Ex: iPhone 14 Pro" {...field} />
+									<Input autoComplete="off" placeholder="Ex: iPhone 14 Pro" {...field} />
 								</FormControl>
 								<FormMessage />
 							</FormItem>
@@ -126,7 +102,11 @@ function NewLostPage() {
 							<FormItem>
 								<FormLabel>Description</FormLabel>
 								<FormControl>
-									<Textarea placeholder="Ex: Black color phone with black phone case" {...field} />
+									<Textarea
+										autoComplete="off"
+										placeholder="Ex: Black color phone with black phone case"
+										{...field}
+									/>
 								</FormControl>
 								<FormMessage />
 							</FormItem>
@@ -163,56 +143,75 @@ function NewLostPage() {
 						control={form.control}
 						name="location"
 						render={({ field }) => (
-							<FormItem className="flex flex-col">
-								<FormLabel>Location</FormLabel>
-								<Popover>
-									<PopoverTrigger asChild>
-										<FormControl>
-											<Button
-												variant="outline"
-												role="combobox"
-												className={cn(
-													"w-full justify-between overflow-hidden",
-													!field.value && "text-muted-foreground"
-												)}
+							<FormItem>
+								<FormLabel>Enter places you might lost it</FormLabel>
+								<div>
+									{places.length >= 1 && (
+										<>
+											<i className="text-gray-600 text-sm">(Double click to remove item)</i>
+											<br />
+										</>
+									)}
+									{places.map(({ place_id, description }) => (
+										<Fragment key={place_id}>
+											<Badge
+												onDoubleClick={() => {
+													setPlaces((d) => d.filter((p) => p.place_id != place_id));
+												}}
 											>
-												{field.value
-													? Cities.find((city) => city.name === field.value)?.name
-													: "Choose location"}
-												<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-											</Button>
-										</FormControl>
-									</PopoverTrigger>
-									<PopoverContent className="w-full max-w-[400px] p-0">
-										<Command>
-											<CommandInput placeholder="Search location..." />
-											<CommandEmpty>No location found.</CommandEmpty>
-											<CommandGroup>
-												{Cities.map((city) => (
-													<CommandItem
-														value={city.name}
-														key={city.name}
-														onSelect={() => {
-															form.setValue("location", city.name);
-														}}
-													>
-														<Check
-															className={cn(
-																"mr-2 h-4 w-4",
-																city.name === field.value ? "opacity-100" : "opacity-0"
-															)}
-														/>
-														{city.name}
-													</CommandItem>
-												))}
-											</CommandGroup>
-										</Command>
-									</PopoverContent>
-								</Popover>
+												{description}
+											</Badge>
+											<br />
+										</Fragment>
+									))}
+								</div>
+								<FormControl>
+									<Input
+										autoComplete="off"
+										placeholder="Ex: One Galle Face..."
+										value={field.value}
+										onChange={(e) => {
+											autoComplete.setValue(e.target.value);
+											field.onChange(e);
+										}}
+										onBlur={field.onBlur}
+										disabled={field.disabled}
+										name={field.name}
+										ref={field.ref}
+									/>
+								</FormControl>
 								<FormMessage />
 							</FormItem>
 						)}
 					/>
+					<div hidden={autoComplete.suggestions.status != "OK"}>
+						<ul>
+							{autoComplete.suggestions.data.map(({ place_id, description }) => (
+								<li
+									className="bg-slate-50 p-1 m-1 rounded-lg"
+									onClick={async () => {
+										autoComplete.setValue("", false);
+										form.setValue("location", "");
+										autoComplete.clearSuggestions();
+										const result = await getGeocode({ address: description });
+										const position = getLatLng(result[0]);
+										setPlaces((d) => [...d, { place_id, description, lat: position.lat, lng: position.lng }]);
+										setLocation(position);
+									}}
+									key={place_id}
+								>
+									{description}
+								</li>
+							))}
+						</ul>
+					</div>
+					<APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAP_API as string}>
+						<div className="w-full h-80" hidden={!location}>
+							<Map gestureHandling="none" center={location} defaultZoom={10} disableDefaultUI>
+								<Marker position={location} />
+							</Map>
+						</div>
+					</APIProvider>
 					<FormField
 						control={form.control}
 						name="date"
