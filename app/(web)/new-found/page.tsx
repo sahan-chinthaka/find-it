@@ -11,9 +11,10 @@ import { itemTypes } from "@/lib/item-types";
 import { cn } from "@/lib/utils";
 import { FoundItemSchema } from "@/schema/found";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { APIProvider, Map, Marker } from "@vis.gl/react-google-maps";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import usePlacesAutoComplete, { LatLng, getGeocode, getLatLng } from "use-places-autocomplete";
 import { z } from "zod";
@@ -30,7 +31,8 @@ function NewFoundPage() {
 			date: new Date(),
 		},
 	});
-	const location = useRef<LatLng>();
+
+	const [location, setLocation] = useState<LatLng>();
 
 	const places = usePlacesAutoComplete({
 		debounce: 300,
@@ -168,7 +170,7 @@ function NewFoundPage() {
 										places.clearSuggestions();
 										const result = await getGeocode({ address: description });
 										const position = getLatLng(result[0]);
-										location.current = position;
+										setLocation(position);
 									}}
 									key={place_id}
 								>
@@ -177,6 +179,15 @@ function NewFoundPage() {
 							))}
 						</ul>
 					</div>
+					<APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAP_API as string}>
+						{location && (
+							<div className="w-full h-80">
+								<Map streetViewControl={false} gestureHandling="none" center={location} defaultZoom={10}>
+									<Marker position={location}></Marker>
+								</Map>
+							</div>
+						)}
+					</APIProvider>
 					<FormItem>
 						<FormLabel>Images</FormLabel>
 						<FormControl>
