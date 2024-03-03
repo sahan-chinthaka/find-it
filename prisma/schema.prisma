@@ -68,6 +68,6 @@ model LostItem {
 model Keyword {
    id         String    @id @default(cuid())
    value      String
-   LostItem   LostItem? @relation(fields: [lostItemId], references: [id])
+   LostItem   LostItem? @relation(fields: [lostItemId], references: [id], onDelete: Cascade)
    lostItemId String?
 }
