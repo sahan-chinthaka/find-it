@@ -14,10 +14,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { APIProvider, Map, Marker } from "@vis.gl/react-google-maps";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import usePlacesAutoComplete, { LatLng, getGeocode, getLatLng } from "use-places-autocomplete";
+import usePlacesAutoComplete, { getGeocode, getLatLng } from "use-places-autocomplete";
 import { z } from "zod";
+import { Place } from "../new-lost/page";
+import { useRouter } from "next/navigation";
 
 function NewFoundPage() {
 	const [disable, setDisable] = useState(false);
@@ -31,21 +33,44 @@ function NewFoundPage() {
 			date: new Date(),
 		},
 	});
+	const router = useRouter();
 
-	const [location, setLocation] = useState<LatLng>();
+	const [location, setLocation] = useState<Place>();
+	const formElem = useRef<HTMLFormElement>(null);
 
 	const places = usePlacesAutoComplete({
 		debounce: 300,
 	});
 
 	function onSubmit(values: z.infer<typeof FoundItemSchema>) {
-		console.log(values);
+		// setDisable(true);
+		fetch("/api/found", {
+			method: "POST",
+			body: JSON.stringify({ ...values, place: location }),
+		})
+			.then((res) => res.json())
+			.then((res) => {
+				console.log(res)
+				if (res.message == "done") {
+					const form_data = new FormData(formElem.current ?? undefined);
+					form_data.append("foundId", res.foundId);
+
+					fetch("/api/found", {
+						method: "PUT",
+						body: form_data,
+					})
+						.then((res) => res.json())
+						.then((res) => {
+							console.log(res);
+						});
+				}
+			});
 	}
 
 	return (
 		<div className="max-w-[450px] mx-auto p-4 rounded shadow-md">
 			<Form {...form}>
-				<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+				<form ref={formElem} onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
 					<FormField
 						control={form.control}
 						name="title"
@@ -170,7 +195,11 @@ function NewFoundPage() {
 										places.clearSuggestions();
 										const result = await getGeocode({ address: description });
 										const position = getLatLng(result[0]);
-										setLocation(position);
+										setLocation({
+											...position,
+											description,
+											place_id,
+										});
 									}}
 									key={place_id}
 								>
