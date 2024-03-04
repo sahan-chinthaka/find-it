@@ -18,9 +18,6 @@ export default function RootLayout({
 			<body>
 				<main>{children}</main>
 				<Toaster />
-				<Script
-					src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAP_API}&libraries=places`}
-				></Script>
 			</body>
 		</html>
 	);
