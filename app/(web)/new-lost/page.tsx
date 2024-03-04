@@ -265,7 +265,7 @@ function NewLostPage() {
 	);
 }
 
-export default function () {
+export default function Test () {
 	const [loaded, setLoaded] = useState(false);
 
 	useEffect(() => {
