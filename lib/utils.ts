@@ -1,4 +1,5 @@
 import { type ClassValue, clsx } from "clsx";
+import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -24,4 +25,13 @@ export function distance(lat1: number, lon1: number, lat2: number, lon2: number,
 		dist = dist * 0.8684;
 	}
 	return dist;
+}
+
+export function cookiesToString(cooks: RequestCookie[]) {
+	let str = "";
+	for (const c of cooks) {
+		str += c.name + "=" + c.value + ";";
+	}
+	str = str.replace(/;$/, "");
+	return str;
 }

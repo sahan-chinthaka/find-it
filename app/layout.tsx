@@ -14,6 +14,10 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en">
+			<script
+				async
+				src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAP_API}&libraries=places&loading=async`}
+			></script>
 			<body>
 				<main>{children}</main>
 				<Toaster />
