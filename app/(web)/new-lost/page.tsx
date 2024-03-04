@@ -20,7 +20,7 @@ import { useForm } from "react-hook-form";
 import usePlacesAutocomplete, { LatLng, getGeocode, getLatLng } from "use-places-autocomplete";
 import { z } from "zod";
 
-interface Place {
+export interface Place {
 	place_id: string;
 	description: string;
 	lat: number;
@@ -57,6 +57,7 @@ function NewLostPage() {
 		})
 			.then((res) => res.json())
 			.then((res) => {
+				console.log(res)
 				if (formElem.current) {
 					const form_data = new FormData(formElem.current);
 
