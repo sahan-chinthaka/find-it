@@ -52,35 +52,37 @@ model Account {
 }
 
 model LostItem {
-   id          String    @id @default(cuid())
+   id          String        @id @default(cuid())
    title       String
    description String
    type        String
    location    String?
    places      Place[]
-   date        DateTime  @default(now())
-   user        User      @relation(fields: [userId], references: [id])
+   date        DateTime      @default(now())
+   user        User          @relation(fields: [userId], references: [id])
    userId      String
    keywords    Keyword[]
-   images      Int       @default(0)
-   createdAt   DateTime  @default(now())
-   updatedAt   DateTime  @updatedAt
+   images      Int           @default(0)
+   createdAt   DateTime      @default(now())
+   updatedAt   DateTime      @updatedAt
+   SuggestItem SuggestItem[]
 }
 
 model FoundItem {
-   id          String    @id @default(cuid())
+   id          String        @id @default(cuid())
    title       String
    description String
    type        String
    location    String?
    places      Place[]
-   date        DateTime  @default(now())
-   user        User      @relation(fields: [userId], references: [id])
+   date        DateTime      @default(now())
+   user        User          @relation(fields: [userId], references: [id])
    userId      String
    keywords    Keyword[]
-   images      Int       @default(0)
-   createdAt   DateTime  @default(now())
-   updatedAt   DateTime  @updatedAt
+   images      Int           @default(0)
+   createdAt   DateTime      @default(now())
+   updatedAt   DateTime      @updatedAt
+   SuggestItem SuggestItem[]
 }
 
 model Keyword {
@@ -100,6 +102,24 @@ model Place {
    description String
    LostItem    LostItem?  @relation(fields: [lostItemId], references: [id], onDelete: Cascade)
    lostItemId  String?
-   FoundItem   FoundItem? @relation(fields: [foundItemId], references: [id], onDelete: Cascade)
+   FoundItem   FoundItem? @relation(fields: [foundItemId], references: [id])
    foundItemId String?
+}
+
+model SuggestItem {
+   id          String            @id @default(cuid())
+   LostItem    LostItem          @relation(fields: [lostItemId], references: [id])
+   FoundItem   FoundItem         @relation(fields: [foundItemId], references: [id])
+   stages      SuggestItemStages
+   lostItemId  String
+   foundItemId String
+}
+
+enum SuggestItemStages {
+   Pending
+   Request
+   Wrong
+   Accept
+   Done
+   Delete
 }
