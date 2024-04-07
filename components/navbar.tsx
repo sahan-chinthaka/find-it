@@ -1,5 +1,6 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,12 +9,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+
 import { Menu, Search } from "lucide-react";
+
 import Link from "next/link";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-export default function navbar() {
-  const [state, setState] = React.useState(false);
+export default function Navbar() {
+  const [state, setState] = useState(false);
   return (
     <div>
       <nav className="bg-white w-full border-b md:border-0">
@@ -31,9 +35,10 @@ export default function navbar() {
               </button>
             </div>
           </div>
+
           <div
             className={`flex-1 justify-self-center pb-3 mt-8 md:block md:pb-0 md:mt-0 ${
-              state ? "block" : "hidden"
+              state ? 'block' : 'hidden'
             }`}
           >
             <ul className="items-center justify-end space-y-8 md:flex md:space-x-6 md:space-y-0">
@@ -62,6 +67,7 @@ export default function navbar() {
               </DropdownMenu>
             </ul>
           </div>
+
         </div>
       </nav>
     </div>
