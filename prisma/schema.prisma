@@ -74,7 +74,7 @@ model FoundItem {
    description String
    type        String
    location    String?
-   place       Place        @relation(fields: [placeId], references: [id], onDelete: Cascade)
+   places      Place        @relation(fields: [placeId], references: [id], onDelete: Cascade)
    date        DateTime     @default(now())
    user        User         @relation(fields: [userId], references: [id])
    userId      String
@@ -106,10 +106,10 @@ model Place {
 }
 
 model SuggesItem {
-   id        String           @id @default(cuid())
-   LostItem  LostItem         @relation(fields: [lostItemId], references: [id])
-   FoundItem FoundItem        @relation(fields: [foundItemId], references: [id])
-   stages    SuggesItemStages
+   id          String           @id @default(cuid())
+   LostItem    LostItem         @relation(fields: [lostItemId], references: [id])
+   FoundItem   FoundItem        @relation(fields: [foundItemId], references: [id])
+   stages      SuggesItemStages
    lostItemId  String
    foundItemId String
 }
