@@ -28,7 +28,6 @@ export default function page() {
             <Carousel>
               <CarouselContent>
                 <CarouselItem>
-                  {" "}
                   <img
                     src="https://github.com/shadcn.png"
                     alt="@shadcn"
@@ -36,7 +35,6 @@ export default function page() {
                   />
                 </CarouselItem>
                 <CarouselItem>
-                  {" "}
                   <img
                     src="https://github.com/shadcn.png"
                     alt="@shadcn"
@@ -44,7 +42,6 @@ export default function page() {
                   />
                 </CarouselItem>
                 <CarouselItem>
-                  {" "}
                   <img
                     src="https://github.com/shadcn.png"
                     alt="@shadcn"
@@ -52,7 +49,6 @@ export default function page() {
                   />
                 </CarouselItem>
                 <CarouselItem>
-                  {" "}
                   <img
                     src="https://github.com/shadcn.png"
                     alt="@shadcn"
@@ -79,14 +75,14 @@ export default function page() {
                     This is just a template, and you should tailor it according
                     to the specifics of your product and the requirements of
                     your website or platform. If you provide more details about
-                    the product or the type of demo you're looking for, I can
-                    offer a more customized example.
+                    the product or the type of demo you&apos;re looking for, I
+                    can offer a more customized example.
                   </TabsContent>
                   <TabsContent value="Contact">
-                    It seems like you're asking for a demo of product details.
+                    It seems like  asking for a demo of product details.
                     However, without specific context about the product or the
-                    type of details you're looking for, I can only provide a
-                    general example. Here's a basic demo of product details:
+                    type of details  looking for, I can only provide a
+                    general example. Here is a basic demo of product details:
                     Product Name: [Name of the Product] Description: [Brief
                     description of the product] Price: [Price of the product]
                   </TabsContent>

@@ -43,10 +43,10 @@ export default function Navbar() {
           >
             <ul className="items-center justify-end space-y-8 md:flex md:space-x-6 md:space-y-0">
               <li className="text-gray-600 hover:text-indigo-600">
-                <Link href="/new-lost">add post</Link>
+                <Link href="/new-lost">Add Lost</Link>
               </li>
               <li className="text-gray-600 hover:text-indigo-600">
-                <Link href="/new-lost">Your post</Link>
+                <Link href="/new-found">Add Found</Link>
               </li>
 
               <DropdownMenu>

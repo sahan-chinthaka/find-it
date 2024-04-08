@@ -1,32 +1,13 @@
 "use client";
 
 import * as React from "react";
-import Link from "next/link";
-
-import { Button } from "@/components/ui/button";
-
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  TableHead,
-  TableRow,
-  TableHeader,
-  TableCell,
-  TableBody,
-  Table,
-} from "@/components/ui/table";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
+import Link from "next/link";
 
 export default function HomePage() {
-  const [state, setState] = React.useState(false);
-
   return (
     <div>
       <div>
@@ -148,109 +129,105 @@ export default function HomePage() {
                 <div className="grid w-full  xl:grid-cols-2 ">
                   <div className="flex flex-col xl:col-span-1 col-span-1 ml-5 ">
                     <Card>
-                      <CardHeader className="flex items-center gap-4">
+                      <CardHeader className="flex items-start gap-4">
                         <CardTitle className="text-base">
-                          Suggestion Items
+                          Approve Items
                         </CardTitle>
                       </CardHeader>
                       <CardContent className="p-0">
                         <ScrollArea className="h-[300px] w-full rounded-md border p-4">
                           <ul className="divide-y">
                             <li className="flex items-center justify-between p-4 hover:bg-gray-100">
-                              <div className="flex items-center gap-4">
-                                <img
-                                  alt="Avatar"
-                                  className="rounded-full"
-                                  height="40"
-                                  src="https://github.com/shadcn.png"
-                                  style={{
-                                    aspectRatio: "40/40",
-                                    objectFit: "cover",
-                                  }}
-                                  width="40"
-                                />
-                                <div className="grid gap-1.5">
-                                  <h3 className="font-semibold">Alice</h3>
-                                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                                    Hi there! How can I help you today?
-                                  </p>
+                              <Link href="suggestion/123">
+                                <div className="flex items-center gap-4">
+                                  <img
+                                    alt="Avatar"
+                                    className="rounded-full"
+                                    height="40"
+                                    src="https://github.com/shadcn.png"
+                                    style={{
+                                      aspectRatio: "40/40",
+                                      objectFit: "cover",
+                                    }}
+                                    width="40"
+                                  />
+                                  <div className="grid gap-1.5">
+                                    <h3 className="font-semibold">Charlie</h3>
+                                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                                      This is regarding my subscription.
+                                    </p>
+                                  </div>
                                 </div>
-                              </div>
-                              <time className="text-sm text-gray-500 dark:text-gray-400">
-                                2:14 PM
-                              </time>
+                              </Link>
                             </li>
                             <li className="flex items-center justify-between p-4 hover:bg-gray-100">
-                              <div className="flex items-center gap-4">
-                                <img
-                                  alt="Avatar"
-                                  className="rounded-full"
-                                  height="40"
-                                  src="https://github.com/shadcn.png"
-                                  style={{
-                                    aspectRatio: "40/40",
-                                    objectFit: "cover",
-                                  }}
-                                  width="40"
-                                />
-                                <div className="grid gap-1.5">
-                                  <h3 className="font-semibold">Bob</h3>
-                                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                                    I have a question about my recent order.
-                                  </p>
+                              <Link href="suggestion/123">
+                                <div className="flex items-center gap-4">
+                                  <img
+                                    alt="Avatar"
+                                    className="rounded-full"
+                                    height="40"
+                                    src="https://github.com/shadcn.png"
+                                    style={{
+                                      aspectRatio: "40/40",
+                                      objectFit: "cover",
+                                    }}
+                                    width="40"
+                                  />
+                                  <div className="grid gap-1.5">
+                                    <h3 className="font-semibold">Charlie</h3>
+                                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                                      This is regarding my subscription.
+                                    </p>
+                                  </div>
                                 </div>
-                              </div>
-                              <time className="text-sm text-gray-500 dark:text-gray-400">
-                                10:45 AM
-                              </time>
+                              </Link>
                             </li>
                             <li className="flex items-center justify-between p-4 hover:bg-gray-100">
-                              <div className="flex items-center gap-4">
-                                <img
-                                  alt="Avatar"
-                                  className="rounded-full"
-                                  height="40"
-                                  src="https://github.com/shadcn.png"
-                                  style={{
-                                    aspectRatio: "40/40",
-                                    objectFit: "cover",
-                                  }}
-                                  width="40"
-                                />
-                                <div className="grid gap-1.5">
-                                  <h3 className="font-semibold">Charlie</h3>
-                                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                                    This is regarding my subscription.
-                                  </p>
+                              <Link href="suggestion/123">
+                                <div className="flex items-center gap-4">
+                                  <img
+                                    alt="Avatar"
+                                    className="rounded-full"
+                                    height="40"
+                                    src="https://github.com/shadcn.png"
+                                    style={{
+                                      aspectRatio: "40/40",
+                                      objectFit: "cover",
+                                    }}
+                                    width="40"
+                                  />
+                                  <div className="grid gap-1.5">
+                                    <h3 className="font-semibold">Charlie</h3>
+                                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                                      This is regarding my subscription.
+                                    </p>
+                                  </div>
                                 </div>
-                              </div>
-                              <time className="text-sm text-gray-500 dark:text-gray-400">
-                                9:22 AM
-                              </time>
+                              </Link>
                             </li>
                             <li className="flex items-center justify-between p-4 hover:bg-gray-100">
-                              <div className="flex items-center gap-4">
-                                <img
-                                  alt="Avatar"
-                                  className="rounded-full"
-                                  height="40"
-                                  src="https://github.com/shadcn.png"
-                                  style={{
-                                    aspectRatio: "40/40",
-                                    objectFit: "cover",
-                                  }}
-                                  width="40"
-                                />
-                                <div className="grid gap-1.5">
-                                  <h3 className="font-semibold">Charlie</h3>
-                                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                                    This is regarding my subscription.
-                                  </p>
+                              <Link href="suggestion/123">
+                                <div className="flex items-center gap-4">
+                                  <img
+                                    alt="Avatar"
+                                    className="rounded-full"
+                                    height="40"
+                                    src="https://github.com/shadcn.png"
+                                    style={{
+                                      aspectRatio: "40/40",
+                                      objectFit: "cover",
+                                    }}
+                                    width="40"
+                                  />
+                                  <div className="grid gap-1.5">
+                                    <h3 className="font-semibold">Charlie</h3>
+                                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                                      This is regarding my subscription.
+                                    </p>
+                                  </div>
                                 </div>
-                              </div>
-                              <time className="text-sm text-gray-500 dark:text-gray-400">
-                                9:22 AM
-                              </time>
+                              </Link>
                             </li>
                           </ul>
                         </ScrollArea>
@@ -259,7 +236,7 @@ export default function HomePage() {
                   </div>
                   <div className="flex flex-col xl:col-span-1 col-span-1 ml-5 ">
                     <Card>
-                      <CardHeader className="flex items-center gap-4">
+                      <CardHeader className="flex items-start gap-4">
                         <CardTitle className="text-base">
                           Suggestion Items
                         </CardTitle>
@@ -268,100 +245,96 @@ export default function HomePage() {
                         <ScrollArea className="h-[300px] w-full rounded-md border p-4">
                           <ul className="divide-y">
                             <li className="flex items-center justify-between p-4 hover:bg-gray-100">
-                              <div className="flex items-center gap-4">
-                                <img
-                                  alt="Avatar"
-                                  className="rounded-full"
-                                  height="40"
-                                  src="https://github.com/shadcn.png"
-                                  style={{
-                                    aspectRatio: "40/40",
-                                    objectFit: "cover",
-                                  }}
-                                  width="40"
-                                />
-                                <div className="grid gap-1.5">
-                                  <h3 className="font-semibold">Alice</h3>
-                                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                                    Hi there! How can I help you today?
-                                  </p>
+                              <Link href="suggestion/123">
+                                <div className="flex items-center gap-4">
+                                  <img
+                                    alt="Avatar"
+                                    className="rounded-full"
+                                    height="40"
+                                    src="https://github.com/shadcn.png"
+                                    style={{
+                                      aspectRatio: "40/40",
+                                      objectFit: "cover",
+                                    }}
+                                    width="40"
+                                  />
+                                  <div className="grid gap-1.5">
+                                    <h3 className="font-semibold">Charlie</h3>
+                                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                                      This is regarding my subscription.
+                                    </p>
+                                  </div>
                                 </div>
-                              </div>
-                              <time className="text-sm text-gray-500 dark:text-gray-400">
-                                2:14 PM
-                              </time>
+                              </Link>
                             </li>
                             <li className="flex items-center justify-between p-4 hover:bg-gray-100">
-                              <div className="flex items-center gap-4">
-                                <img
-                                  alt="Avatar"
-                                  className="rounded-full"
-                                  height="40"
-                                  src="https://github.com/shadcn.png"
-                                  style={{
-                                    aspectRatio: "40/40",
-                                    objectFit: "cover",
-                                  }}
-                                  width="40"
-                                />
-                                <div className="grid gap-1.5">
-                                  <h3 className="font-semibold">Bob</h3>
-                                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                                    I have a question about my recent order.
-                                  </p>
+                              <Link href="suggestion/123">
+                                <div className="flex items-center gap-4">
+                                  <img
+                                    alt="Avatar"
+                                    className="rounded-full"
+                                    height="40"
+                                    src="https://github.com/shadcn.png"
+                                    style={{
+                                      aspectRatio: "40/40",
+                                      objectFit: "cover",
+                                    }}
+                                    width="40"
+                                  />
+                                  <div className="grid gap-1.5">
+                                    <h3 className="font-semibold">Charlie</h3>
+                                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                                      This is regarding my subscription.
+                                    </p>
+                                  </div>
                                 </div>
-                              </div>
-                              <time className="text-sm text-gray-500 dark:text-gray-400">
-                                10:45 AM
-                              </time>
+                              </Link>
                             </li>
                             <li className="flex items-center justify-between p-4 hover:bg-gray-100">
-                              <div className="flex items-center gap-4">
-                                <img
-                                  alt="Avatar"
-                                  className="rounded-full"
-                                  height="40"
-                                  src="https://github.com/shadcn.png"
-                                  style={{
-                                    aspectRatio: "40/40",
-                                    objectFit: "cover",
-                                  }}
-                                  width="40"
-                                />
-                                <div className="grid gap-1.5">
-                                  <h3 className="font-semibold">Charlie</h3>
-                                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                                    This is regarding my subscription.
-                                  </p>
+                              <Link href="suggestion/123">
+                                <div className="flex items-center gap-4">
+                                  <img
+                                    alt="Avatar"
+                                    className="rounded-full"
+                                    height="40"
+                                    src="https://github.com/shadcn.png"
+                                    style={{
+                                      aspectRatio: "40/40",
+                                      objectFit: "cover",
+                                    }}
+                                    width="40"
+                                  />
+                                  <div className="grid gap-1.5">
+                                    <h3 className="font-semibold">Charlie</h3>
+                                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                                      This is regarding my subscription.
+                                    </p>
+                                  </div>
                                 </div>
-                              </div>
-                              <time className="text-sm text-gray-500 dark:text-gray-400">
-                                9:22 AM
-                              </time>
+                              </Link>
                             </li>
                             <li className="flex items-center justify-between p-4 hover:bg-gray-100">
-                              <div className="flex items-center gap-4">
-                                <img
-                                  alt="Avatar"
-                                  className="rounded-full"
-                                  height="40"
-                                  src="https://github.com/shadcn.png"
-                                  style={{
-                                    aspectRatio: "40/40",
-                                    objectFit: "cover",
-                                  }}
-                                  width="40"
-                                />
-                                <div className="grid gap-1.5">
-                                  <h3 className="font-semibold">Charlie</h3>
-                                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                                    This is regarding my subscription.
-                                  </p>
+                              <Link href="suggestion/123">
+                                <div className="flex items-center gap-4">
+                                  <img
+                                    alt="Avatar"
+                                    className="rounded-full"
+                                    height="40"
+                                    src="https://github.com/shadcn.png"
+                                    style={{
+                                      aspectRatio: "40/40",
+                                      objectFit: "cover",
+                                    }}
+                                    width="40"
+                                  />
+                                  <div className="grid gap-1.5">
+                                    <h3 className="font-semibold">Charlie</h3>
+                                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                                      This is regarding my subscription.
+                                    </p>
+                                  </div>
                                 </div>
-                              </div>
-                              <time className="text-sm text-gray-500 dark:text-gray-400">
-                                9:22 AM
-                              </time>
+                              </Link>
                             </li>
                           </ul>
                         </ScrollArea>
