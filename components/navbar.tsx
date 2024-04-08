@@ -1,5 +1,6 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,12 +9,31 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+
 import { Menu, Search } from "lucide-react";
+
 import Link from "next/link";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-export default function navbar() {
-  const [state, setState] = React.useState(false);
+export default function Navbar() {
+  const [state, setState] = useState(false);
+  const[userimg,setuserimg] = useState("https://github.com/shadcn.png");
+
+  useEffect(() => {
+    fetch("/api/user")
+        .then(response => response.json())
+        .then(data => {
+
+            const image  = data.user.image;
+            console.log(image); 
+            setuserimg(image); 
+        })
+        .catch(error => {
+            console.error('Error fetching user data:', error);
+        });
+}, []);
+
   return (
     <div>
       <nav className="bg-white w-full border-b md:border-0">
@@ -31,37 +51,37 @@ export default function navbar() {
               </button>
             </div>
           </div>
+
           <div
             className={`flex-1 justify-self-center pb-3 mt-8 md:block md:pb-0 md:mt-0 ${
-              state ? "block" : "hidden"
+              state ? 'block' : 'hidden'
             }`}
           >
             <ul className="items-center justify-end space-y-8 md:flex md:space-x-6 md:space-y-0">
               <li className="text-gray-600 hover:text-indigo-600">
-                <Link href="/new-lost">add post</Link>
+                <Link href="/new-lost">Add Lost</Link>
               </li>
               <li className="text-gray-600 hover:text-indigo-600">
-                <Link href="/new-lost">Your post</Link>
+                <Link href="/new-found">Add Found</Link>
               </li>
 
               <DropdownMenu>
                 <DropdownMenuTrigger>
                   <Avatar>
-                    <AvatarImage src="https://github.com/shadcn.png" />
+                    <AvatarImage src={userimg} />
                     <AvatarFallback>CN</AvatarFallback>
                   </Avatar>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem>Profile</DropdownMenuItem>
-                  <DropdownMenuItem>Billing</DropdownMenuItem>
-                  <DropdownMenuItem>Team</DropdownMenuItem>
-                  <DropdownMenuItem>Subscription</DropdownMenuItem>
-                </DropdownMenuContent>
+                <DropdownMenuContent className="mt-2 w-40">
+                <DropdownMenuItem>My Account</DropdownMenuItem>
+                <DropdownMenuItem>Settings</DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>Logout</DropdownMenuItem>
+              </DropdownMenuContent>
               </DropdownMenu>
             </ul>
           </div>
+
         </div>
       </nav>
     </div>
