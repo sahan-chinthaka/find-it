@@ -102,14 +102,14 @@ model Place {
    description String
    LostItem    LostItem?  @relation(fields: [lostItemId], references: [id], onDelete: Cascade)
    lostItemId  String?
-   FoundItem   FoundItem? @relation(fields: [foundItemId], references: [id])
+   FoundItem   FoundItem? @relation(fields: [foundItemId], references: [id], onDelete: Cascade)
    foundItemId String?
 }
 
 model SuggestItem {
    id          String            @id @default(cuid())
-   LostItem    LostItem          @relation(fields: [lostItemId], references: [id])
-   FoundItem   FoundItem         @relation(fields: [foundItemId], references: [id])
+   LostItem    LostItem          @relation(fields: [lostItemId], references: [id], onDelete: Cascade)
+   FoundItem   FoundItem         @relation(fields: [foundItemId], references: [id], onDelete: Cascade)
    stages      SuggestItemStages
    lostItemId  String
    foundItemId String
