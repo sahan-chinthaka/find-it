@@ -13,6 +13,7 @@ export async function GET(req: NextRequest) {
     },
     where: {
       userId: uid,
+      
     },
   });
 
@@ -23,6 +24,7 @@ export async function GET(req: NextRequest) {
       },
       where: {
         lostItemId: item.id,
+        stages: "Pending",
       },
     });
 
