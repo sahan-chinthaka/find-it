@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import {
   DropdownMenu,
@@ -18,6 +18,22 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function Navbar() {
   const [state, setState] = useState(false);
+  const[userimg,setuserimg] = useState("https://github.com/shadcn.png");
+
+  useEffect(() => {
+    fetch("/api/user")
+        .then(response => response.json())
+        .then(data => {
+
+            const image  = data.user.image;
+            console.log(image); 
+            setuserimg(image); 
+        })
+        .catch(error => {
+            console.error('Error fetching user data:', error);
+        });
+}, []);
+
   return (
     <div>
       <nav className="bg-white w-full border-b md:border-0">
@@ -52,18 +68,16 @@ export default function Navbar() {
               <DropdownMenu>
                 <DropdownMenuTrigger>
                   <Avatar>
-                    <AvatarImage src="https://github.com/shadcn.png" />
+                    <AvatarImage src={userimg} />
                     <AvatarFallback>CN</AvatarFallback>
                   </Avatar>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem>Profile</DropdownMenuItem>
-                  <DropdownMenuItem>Billing</DropdownMenuItem>
-                  <DropdownMenuItem>Team</DropdownMenuItem>
-                  <DropdownMenuItem>Subscription</DropdownMenuItem>
-                </DropdownMenuContent>
+                <DropdownMenuContent className="mt-2 w-40">
+                <DropdownMenuItem>My Account</DropdownMenuItem>
+                <DropdownMenuItem>Settings</DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>Logout</DropdownMenuItem>
+              </DropdownMenuContent>
               </DropdownMenu>
             </ul>
           </div>
