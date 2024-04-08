@@ -1,5 +1,6 @@
 import { authOptions } from "@/lib/auth-config";
 import prisma from "@/lib/prisma";
+import { distance } from "@/lib/utils";
 import { LostItemSchema } from "@/schema/lost";
 import { GoogleGenerativeAI, Part } from "@google/generative-ai";
 import { put } from "@vercel/blob";
@@ -13,6 +14,57 @@ interface LostData {
 	title: string;
 	description: string;
 	type: string;
+}
+
+async function makeSuggestions(keywords: string[], lost_id: string) {
+	const data = await prisma.foundItem.findMany({
+		where: {
+			keywords: {
+				some: {
+					value: { in: keywords },
+				},
+			},
+		},
+		select: {
+			keywords: true,
+			id: true,
+			places: true,
+		},
+	});
+	const lostItem = await prisma.lostItem.findFirst({
+		where: { id: lost_id },
+		select: {
+			places: { select: { lat: true, lng: true } },
+		},
+	});
+	let final: any[] = [];
+
+	data.forEach((item) => {
+		let count = 0;
+		item.keywords.forEach((k) => {
+			if (keywords.includes(k.value)) count++;
+		});
+		let match = (1.0 * count) / keywords.length;
+		const place = item.places[0];
+
+		if (lostItem)
+			for (let i = 0; i < lostItem.places.length; i++) {
+				const p = lostItem.places[i];
+				const d = distance(place.lat.toNumber(), place.lng.toNumber(), p.lat.toNumber(), p.lng.toNumber(), "K");
+				if (d <= 10) {
+					match += 0.2;
+					break;
+				}
+			}
+
+		// Add only if matching is greater than 60%
+		if (match > 0.6) final.push({ ...item, match });
+	});
+	final = final.sort((a, b) => b.match - a.match).slice(0, 5);
+	await prisma.suggestItem.createMany({
+		data: final.map((a) => ({ foundItemId: a.id, lostItemId: lost_id, stages: "Pending" })),
+	});
+	return final;
 }
 
 async function runWithImages(imageParts: Part[], lost_data: LostData) {
@@ -58,6 +110,7 @@ export async function PUT(req: NextRequest) {
 				}
 			}
 		}
+		let suggestions = null;
 
 		if (imageParts.length >= 1) {
 			const keywords = await runWithImages(imageParts, {
@@ -65,6 +118,7 @@ export async function PUT(req: NextRequest) {
 				description: data.get("description") as string,
 				type: data.get("type") as string,
 			});
+			suggestions = makeSuggestions(keywords, lostID as string);
 			await prisma.lostItem.update({
 				where: {
 					id: lostID?.toString(),
@@ -85,6 +139,7 @@ export async function PUT(req: NextRequest) {
 				images: imagesUpload.length,
 			},
 		});
+		if (suggestions) await suggestions;
 		return NextResponse.json({ message: "done" });
 	} catch (e) {
 		return NextResponse.json({ error: true, message: e });
