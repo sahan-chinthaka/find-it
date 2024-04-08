@@ -15,24 +15,24 @@ import { Menu, Search } from "lucide-react";
 import Link from "next/link";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { signOut } from "next-auth/react";
 
 export default function Navbar() {
   const [state, setState] = useState(false);
-  const[userimg,setuserimg] = useState("https://github.com/shadcn.png");
-
+  const [userimg, setuserimg] = useState("https://github.com/shadcn.png");
+  const [userlogin, setuserlogin] = useState(false);
   useEffect(() => {
     fetch("/api/user")
-        .then(response => response.json())
-        .then(data => {
-
-            const image  = data.user.image;
-            console.log(image); 
-            setuserimg(image); 
-        })
-        .catch(error => {
-            console.error('Error fetching user data:', error);
-        });
-}, []);
+      .then((response) => response.json())
+      .then((data) => {
+        const image = data.user.image;
+        setuserlogin(!userlogin);
+        setuserimg(image);
+      })
+      .catch((error) => {
+        console.error("Error fetching user data:", error);
+      });
+  }, []);
 
   return (
     <div>
@@ -54,7 +54,7 @@ export default function Navbar() {
 
           <div
             className={`flex-1 justify-self-center pb-3 mt-8 md:block md:pb-0 md:mt-0 ${
-              state ? 'block' : 'hidden'
+              state ? "block" : "hidden"
             }`}
           >
             <ul className="items-center justify-end space-y-8 md:flex md:space-x-6 md:space-y-0">
@@ -73,15 +73,22 @@ export default function Navbar() {
                   </Avatar>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="mt-2 w-40">
-                <DropdownMenuItem>My Account</DropdownMenuItem>
-                <DropdownMenuItem>Settings</DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>Logout</DropdownMenuItem>
-              </DropdownMenuContent>
+                  <DropdownMenuItem>My Account</DropdownMenuItem>
+                  <DropdownMenuItem>Settings</DropdownMenuItem>
+                  <DropdownMenuSeparator />
+
+                  <DropdownMenuItem className={userlogin ? "hidden" : "block"}><Link href="/api/auth/signin">Login</Link></DropdownMenuItem>
+
+                  <DropdownMenuItem
+                    onClick={() => signOut()}
+                    className={userlogin ? "block" : "hidden"}
+                  >
+                    Logout
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
               </DropdownMenu>
             </ul>
           </div>
-
         </div>
       </nav>
     </div>
