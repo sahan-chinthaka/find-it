@@ -4,37 +4,40 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
 export async function GET(req: NextRequest) {
-  const user = await getServerSession(authOptions);
-  const uid = user?.user.uid;
+  try {
+    const user = await getServerSession(authOptions);
+    const uid = user?.user.uid;
 
-  const lostProductIds = await prisma.lostItem.findMany({
-    select: {
-      id: true,
-    },
-    where: {
-      userId: uid,
-      
-    },
-  });
-
-  const promises = lostProductIds.map(async (item) => {
-    const SuggestItemId = await prisma.suggestItem.findMany({
+    const lostProductIds = await prisma.lostItem.findMany({
       select: {
-        foundItemId: true,
+        id: true,
       },
       where: {
-        lostItemId: item.id,
-        stages: "Pending",
+        userId: uid,
       },
     });
 
-    return SuggestItemId;
-  });
+    const promises = lostProductIds.map(async (item) => {
+      const SuggestItemId = await prisma.suggestItem.findMany({
+        select: {
+          foundItemId: true,
+        },
+        where: {
+          lostItemId: item.id,
+          stages: "Pending",
+        },
+      });
 
-  const results = await Promise.all(promises);
-  const lostItemIds = results
-    .map((result) => result.map((item) => item.foundItemId))
-    .flat();
+      return SuggestItemId;
+    });
 
-  return NextResponse.json({ lostItemIds });
+    const results = await Promise.all(promises);
+    const lostItemIds = results
+      .map((result) => result.map((item) => item.foundItemId))
+      .flat();
+
+    return NextResponse.json({ lostItemIds });
+  } catch (e) {
+    return NextResponse.json({ error: true, message: e });
+  }
 }

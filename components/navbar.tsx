@@ -18,9 +18,11 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { signOut } from "next-auth/react";
 
 export default function Navbar() {
+
   const [state, setState] = useState(false);
   const [userimg, setuserimg] = useState("https://github.com/shadcn.png");
   const [userlogin, setuserlogin] = useState(false);
+  
   useEffect(() => {
     fetch("/api/user")
       .then((response) => response.json())

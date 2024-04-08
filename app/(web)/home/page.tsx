@@ -1,4 +1,4 @@
-"use client";
+
 
 import * as React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import Link from "next/link";
+import SuggestTable from "@/components/suggestTable";
 
 export default function HomePage() {
   return (
@@ -243,100 +244,7 @@ export default function HomePage() {
                       </CardHeader>
                       <CardContent className="p-0">
                         <ScrollArea className="h-[300px] w-full rounded-md border p-4">
-                          <ul className="divide-y">
-                            <li className="flex items-center justify-between p-4 hover:bg-gray-100">
-                              <Link href="suggestion/123">
-                                <div className="flex items-center gap-4">
-                                  <img
-                                    alt="Avatar"
-                                    className="rounded-full"
-                                    height="40"
-                                    src="https://github.com/shadcn.png"
-                                    style={{
-                                      aspectRatio: "40/40",
-                                      objectFit: "cover",
-                                    }}
-                                    width="40"
-                                  />
-                                  <div className="grid gap-1.5">
-                                    <h3 className="font-semibold">Charlie</h3>
-                                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                                      This is regarding my subscription.
-                                    </p>
-                                  </div>
-                                </div>
-                              </Link>
-                            </li>
-                            <li className="flex items-center justify-between p-4 hover:bg-gray-100">
-                              <Link href="suggestion/123">
-                                <div className="flex items-center gap-4">
-                                  <img
-                                    alt="Avatar"
-                                    className="rounded-full"
-                                    height="40"
-                                    src="https://github.com/shadcn.png"
-                                    style={{
-                                      aspectRatio: "40/40",
-                                      objectFit: "cover",
-                                    }}
-                                    width="40"
-                                  />
-                                  <div className="grid gap-1.5">
-                                    <h3 className="font-semibold">Charlie</h3>
-                                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                                      This is regarding my subscription.
-                                    </p>
-                                  </div>
-                                </div>
-                              </Link>
-                            </li>
-                            <li className="flex items-center justify-between p-4 hover:bg-gray-100">
-                              <Link href="suggestion/123">
-                                <div className="flex items-center gap-4">
-                                  <img
-                                    alt="Avatar"
-                                    className="rounded-full"
-                                    height="40"
-                                    src="https://github.com/shadcn.png"
-                                    style={{
-                                      aspectRatio: "40/40",
-                                      objectFit: "cover",
-                                    }}
-                                    width="40"
-                                  />
-                                  <div className="grid gap-1.5">
-                                    <h3 className="font-semibold">Charlie</h3>
-                                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                                      This is regarding my subscription.
-                                    </p>
-                                  </div>
-                                </div>
-                              </Link>
-                            </li>
-                            <li className="flex items-center justify-between p-4 hover:bg-gray-100">
-                              <Link href="suggestion/123">
-                                <div className="flex items-center gap-4">
-                                  <img
-                                    alt="Avatar"
-                                    className="rounded-full"
-                                    height="40"
-                                    src="https://github.com/shadcn.png"
-                                    style={{
-                                      aspectRatio: "40/40",
-                                      objectFit: "cover",
-                                    }}
-                                    width="40"
-                                  />
-                                  <div className="grid gap-1.5">
-                                    <h3 className="font-semibold">Charlie</h3>
-                                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                                      This is regarding my subscription.
-                                    </p>
-                                  </div>
-                                </div>
-                              </Link>
-                            </li>
-                          </ul>
+                          <SuggestTable />
                         </ScrollArea>
                       </CardContent>
                     </Card>
