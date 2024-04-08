@@ -14,12 +14,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { APIProvider, Map, Marker } from "@vis.gl/react-google-maps";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import usePlacesAutoComplete, { getGeocode, getLatLng } from "use-places-autocomplete";
 import { z } from "zod";
 import { Place } from "../new-lost/page";
 import { useRouter } from "next/navigation";
+import { Loader } from "@googlemaps/js-api-loader";
 
 function NewFoundPage() {
 	const [disable, setDisable] = useState(false);
@@ -50,7 +51,7 @@ function NewFoundPage() {
 		})
 			.then((res) => res.json())
 			.then((res) => {
-				console.log(res)
+				console.log(res);
 				if (res.message == "done") {
 					const form_data = new FormData(formElem.current ?? undefined);
 					form_data.append("foundId", res.foundId);
@@ -233,4 +234,20 @@ function NewFoundPage() {
 	);
 }
 
-export default NewFoundPage;
+export default function Test() {
+	const [loaded, setLoaded] = useState(false);
+
+	useEffect(() => {
+		const loader = new Loader({
+			apiKey: process.env.NEXT_PUBLIC_GOOGLE_MAP_API as string,
+			libraries: ["places"],
+		});
+		loader.load().then(() => {
+			setLoaded(true);
+		});
+	}, []);
+
+	if (!loaded) return "Loading";
+
+	return <NewFoundPage />;
+}

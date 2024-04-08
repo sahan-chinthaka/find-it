@@ -276,7 +276,7 @@ export default function Test () {
 		loader.load().then(() => {
 			setLoaded(true);
 		});
-	});
+	}, []);
 
 	if (!loaded) return "Loading";
 
