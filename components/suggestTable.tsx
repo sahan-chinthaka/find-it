@@ -60,7 +60,7 @@ export default function suggestTable() {
                 No have suggestion item
               </p>
             </div>
-            
+
             <img
               alt="GIF"
               className="aspect-square"
@@ -68,7 +68,6 @@ export default function suggestTable() {
               src="https://i.postimg.cc/B6yVSWfW/searching-find.gif"
               width="150"
             />
-            
           </div>
         </section>
       ) : (
@@ -77,7 +76,15 @@ export default function suggestTable() {
             className="flex items-center justify-between p-4 hover:bg-gray-100"
             key={item.id}
           >
-            <Link href={`suggestion/${item.id}`}>
+            {/* <Link href={`suggestion/${item.id}`}> */}
+            <Link
+              href={{
+                pathname: "/suggestion",
+                query: {
+                  id: item.id,
+                },
+              }}
+            >
               <div className="flex items-center gap-4">
                 <img
                   alt="Avatar"
