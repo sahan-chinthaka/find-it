@@ -44,7 +44,7 @@ function NewFoundPage() {
 	});
 
 	function onSubmit(values: z.infer<typeof FoundItemSchema>) {
-		// setDisable(true);
+		setDisable(true);
 		fetch("/api/found", {
 			method: "POST",
 			body: JSON.stringify({ ...values, place: location }),
@@ -63,6 +63,7 @@ function NewFoundPage() {
 						.then((res) => res.json())
 						.then((res) => {
 							console.log(res);
+							setDisable(false);
 						});
 				}
 			});
