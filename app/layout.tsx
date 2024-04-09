@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import Script from "next/script";
+import Navbar from "@/components/navbar";
 
 export const metadata: Metadata = {
 	title: "FindIt",
@@ -15,7 +16,8 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en">
-			<body>
+			<body suppressHydrationWarning={true}>
+				<Navbar />
 				<main>{children}</main>
 				<Toaster />
 			</body>
