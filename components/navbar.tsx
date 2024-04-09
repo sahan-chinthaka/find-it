@@ -43,7 +43,7 @@ export default function Navbar() {
         <div className="items-center px-4 max-w-screen-xl mx-auto md:flex md:px-8">
           <div className="flex items-center justify-between py-3 md:py-5 md:block">
             <Link href="/">
-              <h1 className="text-3xl font-bold text-purple-600">Logo</h1>
+              <h1 className="text-3xl font-bold text-purple-600">FindIt</h1>
             </Link>
             <div className="md:hidden">
               <button
@@ -62,10 +62,10 @@ export default function Navbar() {
           >
             <ul className="items-center justify-end space-y-8 md:flex md:space-x-6 md:space-y-0">
               <li className="text-gray-600 hover:text-indigo-600">
-                <Link href="/new-lost">Add Lost</Link>
+                <Link href="/lost">Lost</Link>
               </li>
               <li className="text-gray-600 hover:text-indigo-600">
-                <Link href="/new-found">Add Found</Link>
+                <Link href="/found">Found</Link>
               </li>
 
               <DropdownMenu>
