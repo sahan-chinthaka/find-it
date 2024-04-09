@@ -5,7 +5,6 @@ async function LostItemView({ params }: { params: { lostID: string } }) {
 
 	const result = await fetch(process.env.BACKEND + "/api/lost/" + lostID);
 	const json = await result.json();
-	console.log(json)
 
 	return (
 		<div>
