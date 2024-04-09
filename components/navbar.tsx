@@ -56,9 +56,9 @@ export default function Navbar() {
           </div>
 
           <div
-            className={
-              "flex-1 justify-self-center pb-3 mt-8 md:block md:pb-0 md:mt-0 "
-            }
+            className={`flex-1 justify-self-center pb-3 mt-8 md:block md:pb-0 md:mt-0 ${
+              state ? "block" : "hidden"
+            }`}
           >
             <ul className="items-center justify-end space-y-8 md:flex md:space-x-6 md:space-y-0">
               <li className="text-gray-600 hover:text-indigo-600">
