@@ -11,6 +11,7 @@ interface SuggestItems {
   id: string;
   sugessId: string;
   stages: string;
+  lostitemid: string;
 }
 
 export default function Approvetable() {
@@ -23,12 +24,13 @@ export default function Approvetable() {
         .then((response) => response.json())
         .then((data) => {
           if (data == null) {
-            console.log("value null")
+            console.log("value null");
           } else {
             fetch("/api/suggest/request")
               .then((response) => response.json())
               .then((data) => {
                 const lostItemIds = data.flattenedArray;
+
                 lostItemIds.map((item: any) => {
                   // renderTable(item.foundItemId,item.id);
                   fetch(`/api/found/${item.foundItemId}`)
@@ -42,6 +44,7 @@ export default function Approvetable() {
                         id: id,
                         sugessId: item.id,
                         stages: item.stages,
+                        lostitemid: item.lostItemId,
                       };
 
                       setSuggestItems((prevItems) => [
@@ -84,9 +87,9 @@ export default function Approvetable() {
             {/* <Link href={`suggestion/${item.id}`}> */}
             <Link
               href={{
-                pathname: "/suggestion",
+                pathname: "/request",
                 query: {
-                  id: item.id,
+                  id: item.lostitemid,
                   sugessId: item.sugessId,
                 },
               }}
@@ -98,7 +101,7 @@ export default function Approvetable() {
                       alt="Avatar"
                       className="rounded-full"
                       height="40"
-                      src="https://github.com/shadcn.png"
+                      src={item.image}
                       style={{
                         aspectRatio: "40/40",
                         objectFit: "cover",
