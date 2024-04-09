@@ -62,7 +62,7 @@ model LostItem {
    user        User          @relation(fields: [userId], references: [id])
    userId      String
    keywords    Keyword[]
-   images      Int           @default(0)
+   images      String[]
    createdAt   DateTime      @default(now())
    updatedAt   DateTime      @updatedAt
    SuggestItem SuggestItem[]
@@ -79,7 +79,7 @@ model FoundItem {
    user        User          @relation(fields: [userId], references: [id])
    userId      String
    keywords    Keyword[]
-   images      Int           @default(0)
+   images      String[]
    createdAt   DateTime      @default(now())
    updatedAt   DateTime      @updatedAt
    SuggestItem SuggestItem[]
