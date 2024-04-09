@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
 		});
 
 		const { password: _, ...ret } = user ?? {};
-		return NextResponse.json({ ...ret, message: "Done" });
+		return NextResponse.json({ ...ret, message: "done" });
 	} catch (e) {
 		if (e instanceof z.ZodError) {
 			return NextResponse.json({ error: true, message: e.issues });

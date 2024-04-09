@@ -15,12 +15,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { APIProvider, Map, Marker } from "@vis.gl/react-google-maps";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
-import { Fragment, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import usePlacesAutocomplete, { LatLng, getGeocode, getLatLng } from "use-places-autocomplete";
 import { z } from "zod";
+import { Loader } from "@googlemaps/js-api-loader";
 
-interface Place {
+export interface Place {
 	place_id: string;
 	description: string;
 	lat: number;
@@ -57,6 +58,7 @@ function NewLostPage() {
 		})
 			.then((res) => res.json())
 			.then((res) => {
+				console.log(res);
 				if (formElem.current) {
 					const form_data = new FormData(formElem.current);
 
@@ -263,4 +265,20 @@ function NewLostPage() {
 	);
 }
 
-export default NewLostPage;
+export default function Test () {
+	const [loaded, setLoaded] = useState(false);
+
+	useEffect(() => {
+		const loader = new Loader({
+			apiKey: process.env.NEXT_PUBLIC_GOOGLE_MAP_API as string,
+			libraries: ["places"],
+		});
+		loader.load().then(() => {
+			setLoaded(true);
+		});
+	}, []);
+
+	if (!loaded) return "Loading";
+
+	return <NewLostPage />;
+}
