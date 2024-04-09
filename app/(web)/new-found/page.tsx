@@ -55,6 +55,7 @@ function NewFoundPage() {
 				if (res.message == "done") {
 					const form_data = new FormData(formElem.current ?? undefined);
 					form_data.append("foundId", res.foundId);
+					const foundId = res.foundId;
 
 					fetch("/api/found", {
 						method: "PUT",
@@ -63,8 +64,8 @@ function NewFoundPage() {
 						.then((res) => res.json())
 						.then((res) => {
 							console.log(res);
-							setDisable(false);
-						});
+							router.push("/found/" + foundId);
+						}).finally(() => setDisable(false));
 				}
 			});
 	}
