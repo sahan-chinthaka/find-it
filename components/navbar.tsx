@@ -84,10 +84,6 @@ export default function Navbar() {
                     <Link href="/api/auth/signin">Login</Link>
                   </DropdownMenuItem>
 
-                  <DropdownMenuItem className={userlogin ? "hidden" : "block"}>
-                    <Link href="/api/auth/signin">Login</Link>
-                  </DropdownMenuItem>
-
                   <DropdownMenuItem className={userlogin ? "block" : "hidden"}>
                     <Link href="/api/auth/signout">Logout</Link>
                   </DropdownMenuItem>
