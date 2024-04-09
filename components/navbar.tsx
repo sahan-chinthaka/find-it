@@ -89,7 +89,7 @@ export default function Navbar() {
                   </DropdownMenuItem>
 
                   <DropdownMenuItem className={userlogin ? "block" : "hidden"}>
-                    <a onClick={() => {console.log("hello")}}>Logout</a>
+                    <Link href="/api/auth/signout">Logout</Link>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>

@@ -14,9 +14,9 @@ interface SuggestItems {
 export default function SuggestTable() {
   const [suggestItems, setSuggestItems] = useState<SuggestItems[]>([]);
 
-
+  let gocount =1;
   useEffect(() => {
-    let gocount =1;
+
     if(gocount == 1){
         fetch("/api/suggest/get")
         .then((response) => response.json())
