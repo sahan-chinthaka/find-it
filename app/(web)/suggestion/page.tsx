@@ -35,6 +35,8 @@ export default function page() {
 
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
+  const sugessId = searchParams.get("sugessId");
+
   let count = 1;
 
   useEffect(() => {
@@ -64,6 +66,62 @@ export default function page() {
     }
     count++;
   };
+
+  function notmindbtn() {
+    const data = {
+      id: sugessId,
+      stages: "Wrong",
+    };
+
+    const options = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    };
+
+    fetch(`/api/suggest/stages`, options)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        console.log("Request sent successfully");
+        console.log(response);
+        window.location.href = "/";
+      })
+      .catch((error) => {
+        console.error("There was a problem with the fetch operation:", error);
+      });
+  }
+
+  function thismindbtn() {
+    const data = {
+      id: sugessId,
+      stages: "Request",
+    };
+
+    const options = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    };
+
+    fetch(`/api/suggest/stages`, options)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        console.log("Request sent successfully");
+        console.log(response);
+        window.location.href = "/";
+      })
+      .catch((error) => {
+        console.error("There was a problem with the fetch operation:", error);
+      });
+  }
 
   return (
     <div>
@@ -123,14 +181,13 @@ export default function page() {
                           {item.description}
                         </TabsContent>
                         <TabsContent value="Contact">
-                        <section className="flex items-start  py-6">
+                          <section className="flex items-start  py-6">
                             <div className="container flex flex-col items-center px-4 space-y-4">
                               <div className="flex flex-col items-center space-y-2 text-center">
                                 <p className="text-lg font-medium text-gray-500 dark:text-gray-400">
                                   Don't have access yet
                                 </p>
                               </div>
-
                             </div>
                           </section>
                         </TabsContent>
@@ -142,15 +199,21 @@ export default function page() {
                                   Don't have access yet
                                 </p>
                               </div>
-
                             </div>
                           </section>
                         </TabsContent>
                       </Tabs>
                     </CardContent>
                     <CardFooter>
-                      <Button variant="destructive">Not mind</Button>
-                      <Button className="mx-4">This Mind</Button>
+                      <Button
+                        variant="destructive"
+                        onClick={() => notmindbtn()}
+                      >
+                        Not mind
+                      </Button>
+                      <Button className="mx-4" onClick={() => thismindbtn()}>
+                        This Mind
+                      </Button>
                     </CardFooter>
                   </Card>
                 </div>

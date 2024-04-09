@@ -19,9 +19,6 @@ export async function GET(req: NextRequest) {
 
     const promises = lostProductIds.map(async (item) => {
       const SuggestItemId = await prisma.suggestItem.findMany({
-        select: {
-          foundItemId: true,
-        },
         where: {
           lostItemId: item.id,
           stages: "Pending",
@@ -32,12 +29,19 @@ export async function GET(req: NextRequest) {
     });
 
     const results = await Promise.all(promises);
-    const lostItemIds = results
-      .map((result) => result.map((item) => item.foundItemId))
-      .flat();
 
-    return NextResponse.json({ lostItemIds });
+    // const lostItemIds = results
+    //   .map((result) => result.map((item) => item.foundItemId))
+    //   .flat();
+    const flattenedArray = flattenArrayOfArrays(results);
+
+    return NextResponse.json({ flattenedArray });
   } catch (e) {
     return NextResponse.json({ error: true, message: e });
   }
+}
+
+
+function flattenArrayOfArrays(arrayOfArrays: any[]) {
+  return arrayOfArrays.reduce((acc, curr) => acc.concat(curr), []);
 }

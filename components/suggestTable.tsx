@@ -8,42 +8,51 @@ interface SuggestItems {
   name: string;
   description: string;
   id: string;
+  sugessId:string;
 }
 
 export default function suggestTable() {
   const [suggestItems, setSuggestItems] = useState<SuggestItems[]>([]);
-
+  let gocount =1;
   useEffect(() => {
     setSuggestItems([]);
     fetchData();
   }, []);
 
   const fetchData = async () => {
-    fetch("/api/suggest/get")
+    if(gocount == 1){
+      fetch("/api/suggest/get")
       .then((response) => response.json())
       .then((data) => {
-        const lostItemIds = data.lostItemIds;
+
+        const lostItemIds = data.flattenedArray;
         lostItemIds.map((item: any) => {
-          renderTable(item);
+          renderTable(item.foundItemId,item.id);
         });
       })
       .catch((error) => {
         console.error("Error fetching user data:", error);
       });
+    }
+    gocount++;
   };
 
-  const renderTable = (id: string) => {
+  const renderTable = (id: string ,sugessId:string) => {
     fetch(`/api/found/${id}`)
       .then((response) => response.json())
       .then((data) => {
+
         const { id, title, description, images } = data;
         const suggestItem = {
           image: images.toString(),
           name: title,
           description: description,
           id: id,
+          sugessId:sugessId
         };
+
         setSuggestItems((prevItems) => [...prevItems, suggestItem]);
+      
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
@@ -82,6 +91,7 @@ export default function suggestTable() {
                 pathname: "/suggestion",
                 query: {
                   id: item.id,
+                  sugessId:item.sugessId,
                 },
               }}
             >
