@@ -117,6 +117,7 @@ export async function PUT(req: NextRequest) {
 				type: form.get("type") as string,
 			});
 			suggestions = makeSugestions(keywords, foundId as string);
+			const p = await Promise.all(imagesUpload);
 			await prisma.foundItem.update({
 				where: {
 					id: foundId?.toString(),
@@ -125,11 +126,10 @@ export async function PUT(req: NextRequest) {
 					keywords: {
 						create: keywords.map((a) => ({ value: a })),
 					},
-					images: imagesUpload.length,
+					images: p.map(a => a.url),
 				},
 			});
 		}
-		await Promise.all(imagesUpload);
 		await suggestions;
 
 		return NextResponse.json({ message: "done" });

@@ -8,56 +8,50 @@ interface SuggestItems {
   name: string;
   description: string;
   id: string;
-  sugessId:string;
+  sugessId: string;
 }
 
-export default function suggestTable() {
+export default function SuggestTable() {
   const [suggestItems, setSuggestItems] = useState<SuggestItems[]>([]);
+
   let gocount =1;
   useEffect(() => {
-    setSuggestItems([]);
-    fetchData();
-  }, []);
 
-  const fetchData = async () => {
     if(gocount == 1){
-      fetch("/api/suggest/get")
-      .then((response) => response.json())
-      .then((data) => {
-
-        const lostItemIds = data.flattenedArray;
-        lostItemIds.map((item: any) => {
-          renderTable(item.foundItemId,item.id);
-        });
-      })
-      .catch((error) => {
-        console.error("Error fetching user data:", error);
-      });
-    }
-    gocount++;
-  };
-
-  const renderTable = (id: string ,sugessId:string) => {
-    fetch(`/api/found/${id}`)
-      .then((response) => response.json())
-      .then((data) => {
-
-        const { id, title, description, images } = data;
-        const suggestItem = {
-          image: images.toString(),
-          name: title,
-          description: description,
-          id: id,
-          sugessId:sugessId
-        };
-
-        setSuggestItems((prevItems) => [...prevItems, suggestItem]);
+        fetch("/api/suggest/get")
+        .then((response) => response.json())
+        .then((data) => {
+  
+          const lostItemIds = data.flattenedArray;
+          lostItemIds.map((item: any) => {
+            // renderTable(item.foundItemId,item.id);
+            fetch(`/api/found/${item.foundItemId}`)
+            .then((response) => response.json())
+            .then((data) => {
       
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
-  };
+              const { id, title, description, images } = data;
+              const suggestItem = {
+                image: images.toString(),
+                name: title,
+                description: description,
+                id: id,
+                sugessId:item.id
+              };
+      
+              setSuggestItems((prevItems) => [...prevItems, suggestItem]);
+            
+            })
+            .catch((error) => {
+              console.error("Error fetching data:", error);
+            });
+          });
+        })
+        .catch((error) => {
+          console.error("Error fetching user data:", error);
+        });
+      }
+      gocount++;
+  }, []);
 
   return (
     <ul className="divide-y">

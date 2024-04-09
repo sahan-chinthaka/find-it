@@ -8,7 +8,7 @@ export async function GET(req: NextRequest) {
     const user = await getServerSession(authOptions);
     const uid = user?.user.uid;
 
-    const lostProductIds = await prisma.lostItem.findMany({
+    const foundProductIds = await prisma.foundItem.findMany({
       select: {
         id: true,
       },
@@ -17,11 +17,13 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    const promises = lostProductIds.map(async (item) => {
+    const promises = foundProductIds.map(async (item) => {
       const SuggestItemId = await prisma.suggestItem.findMany({
         where: {
-          lostItemId: item.id,
-          stages: "Pending",
+          foundItemId: item.id,
+          stages: {
+            in: ["Request", "Accept"]
+          }
         },
       });
 
@@ -29,10 +31,6 @@ export async function GET(req: NextRequest) {
     });
 
     const results = await Promise.all(promises);
-
-    // const lostItemIds = results
-    //   .map((result) => result.map((item) => item.foundItemId))
-    //   .flat();
     const flattenedArray = flattenArrayOfArrays(results);
 
     return NextResponse.json({ flattenedArray });
@@ -40,7 +38,6 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: true, message: e });
   }
 }
-
 
 function flattenArrayOfArrays(arrayOfArrays: any[]) {
   return arrayOfArrays.reduce((acc, curr) => acc.concat(curr), []);

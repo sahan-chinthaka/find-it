@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
       const SuggestItemId = await prisma.suggestItem.findMany({
         where: {
           lostItemId: item.id,
-          stages: "Pending",
+          stages: "Accept",
         },
       });
 

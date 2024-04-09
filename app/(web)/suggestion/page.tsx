@@ -19,7 +19,6 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
-import { FoundItem } from "@prisma/client";
 
 interface FoundItems {
   name: string;
@@ -30,22 +29,21 @@ interface FoundItems {
   images: number;
 }
 
-export default function page() {
+export default function page({
+  searchParams,
+}: {
+  searchParams: {
+    id: string;
+    sugessId: string;
+  };
+}) {
   const [foundItems, setFoundItems] = useState<FoundItems[]>([]);
-
-  const searchParams = useSearchParams();
-  const id = searchParams.get("id");
-  const sugessId = searchParams.get("sugessId");
 
   let count = 1;
 
   useEffect(() => {
-    renderData();
-  }, []);
-
-  const renderData = () => {
     if (count == 1) {
-      fetch(`/api/found/${id}`)
+      fetch(`/api/found/${searchParams.id}`)
         .then((response) => response.json())
         .then((data) => {
           const { title, description, id, type, location, images } = data;
@@ -65,11 +63,11 @@ export default function page() {
         });
     }
     count++;
-  };
+  }, []);
 
   function notmindbtn() {
     const data = {
-      id: sugessId,
+      id: searchParams.sugessId,
       stages: "Wrong",
     };
 
@@ -97,7 +95,7 @@ export default function page() {
 
   function thismindbtn() {
     const data = {
-      id: sugessId,
+      id: searchParams.sugessId,
       stages: "Request",
     };
 
@@ -185,7 +183,7 @@ export default function page() {
                             <div className="container flex flex-col items-center px-4 space-y-4">
                               <div className="flex flex-col items-center space-y-2 text-center">
                                 <p className="text-lg font-medium text-gray-500 dark:text-gray-400">
-                                  Don't have access yet
+                                  Do not have access yet
                                 </p>
                               </div>
                             </div>
@@ -196,7 +194,7 @@ export default function page() {
                             <div className="container flex flex-col items-center px-4 space-y-4">
                               <div className="flex flex-col items-center space-y-2 text-center">
                                 <p className="text-lg font-medium text-gray-500 dark:text-gray-400">
-                                  Don't have access yet
+                                  Do not have access yet
                                 </p>
                               </div>
                             </div>

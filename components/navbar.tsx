@@ -18,18 +18,19 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { signOut } from "next-auth/react";
 
 export default function Navbar() {
-
   const [state, setState] = useState(false);
   const [userimg, setuserimg] = useState("https://github.com/shadcn.png");
   const [userlogin, setuserlogin] = useState(false);
-  
+
   useEffect(() => {
     fetch("/api/user")
       .then((response) => response.json())
       .then((data) => {
         const image = data.user.image;
-        setuserlogin(!userlogin);
-        setuserimg(image);
+        if (image) {
+          setuserlogin(true);
+          setuserimg(image);
+        }
       })
       .catch((error) => {
         console.error("Error fetching user data:", error);
@@ -79,13 +80,12 @@ export default function Navbar() {
                   <DropdownMenuItem>Settings</DropdownMenuItem>
                   <DropdownMenuSeparator />
 
-                  <DropdownMenuItem className={userlogin ? "hidden" : "block"}><Link href="/api/auth/signin">Login</Link></DropdownMenuItem>
+                  <DropdownMenuItem className={userlogin ? "hidden" : "block"}>
+                    <Link href="/api/auth/signin">Login</Link>
+                  </DropdownMenuItem>
 
-                  <DropdownMenuItem
-                    onClick={() => signOut()}
-                    className={userlogin ? "block" : "hidden"}
-                  >
-                    Logout
+                  <DropdownMenuItem className={userlogin ? "block" : "hidden"}>
+                    <Link href="/api/auth/signout">Logout</Link>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>

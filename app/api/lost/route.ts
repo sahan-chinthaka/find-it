@@ -130,13 +130,13 @@ export async function PUT(req: NextRequest) {
 				},
 			});
 		}
-		await Promise.all(imagesUpload);
+		const p = await Promise.all(imagesUpload);
 		await prisma.lostItem.update({
 			where: {
 				id: lostID.toString(),
 			},
 			data: {
-				images: imagesUpload.length,
+				images: p.map(a => a.url),
 			},
 		});
 		if (suggestions) await suggestions;

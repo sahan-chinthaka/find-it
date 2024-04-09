@@ -1,5 +1,3 @@
-
-
 import * as React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -7,6 +5,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import Link from "next/link";
 import SuggestTable from "@/components/suggestTable";
+import Approvetable from "@/components/approvetable";
+import Acceptable from "@/components/acceptTable";
 
 export default function HomePage() {
   return (
@@ -25,7 +25,7 @@ export default function HomePage() {
                   <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                       <CardTitle className="text-sm font-medium">
-                        Total Revenue
+                        Total lost item
                       </CardTitle>
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -41,16 +41,14 @@ export default function HomePage() {
                       </svg>
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold">$45,231.89</div>
-                      <p className="text-xs text-muted-foreground">
-                        +20.1% from last month
-                      </p>
+                      <div className="text-2xl font-bold">8</div>
+                      <p className="text-xs text-muted-foreground"></p>
                     </CardContent>
                   </Card>
                   <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                       <CardTitle className="text-sm font-medium">
-                        Subscriptions
+                        Total Found Item
                       </CardTitle>
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -68,16 +66,14 @@ export default function HomePage() {
                       </svg>
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold">+2350</div>
-                      <p className="text-xs text-muted-foreground">
-                        +180.1% from last month
-                      </p>
+                      <div className="text-2xl font-bold">0</div>
+                      <p className="text-xs text-muted-foreground"></p>
                     </CardContent>
                   </Card>
                   <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                       <CardTitle className="text-sm font-medium">
-                        Sales
+                        Total Suggestion Items
                       </CardTitle>
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -94,16 +90,14 @@ export default function HomePage() {
                       </svg>
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold">+12,234</div>
-                      <p className="text-xs text-muted-foreground">
-                        +19% from last month
-                      </p>
+                      <div className="text-2xl font-bold">2</div>
+                      <p className="text-xs text-muted-foreground"></p>
                     </CardContent>
                   </Card>
                   <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                       <CardTitle className="text-sm font-medium">
-                        Active Now
+                        Finish Item
                       </CardTitle>
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -119,10 +113,8 @@ export default function HomePage() {
                       </svg>
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold">+573</div>
-                      <p className="text-xs text-muted-foreground">
-                        +201 since last hour
-                      </p>
+                      <div className="text-2xl font-bold">0</div>
+                      <p className="text-xs text-muted-foreground"></p>
                     </CardContent>
                   </Card>
                 </div>
@@ -137,100 +129,8 @@ export default function HomePage() {
                       </CardHeader>
                       <CardContent className="p-0">
                         <ScrollArea className="h-[300px] w-full rounded-md border p-4">
-                          <ul className="divide-y">
-                            <li className="flex items-center justify-between p-4 hover:bg-gray-100">
-                              <Link href="suggestion/123">
-                                <div className="flex items-center gap-4">
-                                  <img
-                                    alt="Avatar"
-                                    className="rounded-full"
-                                    height="40"
-                                    src="https://github.com/shadcn.png"
-                                    style={{
-                                      aspectRatio: "40/40",
-                                      objectFit: "cover",
-                                    }}
-                                    width="40"
-                                  />
-                                  <div className="grid gap-1.5">
-                                    <h3 className="font-semibold">Charlie</h3>
-                                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                                      This is regarding my subscription.
-                                    </p>
-                                  </div>
-                                </div>
-                              </Link>
-                            </li>
-                            <li className="flex items-center justify-between p-4 hover:bg-gray-100">
-                              <Link href="suggestion/123">
-                                <div className="flex items-center gap-4">
-                                  <img
-                                    alt="Avatar"
-                                    className="rounded-full"
-                                    height="40"
-                                    src="https://github.com/shadcn.png"
-                                    style={{
-                                      aspectRatio: "40/40",
-                                      objectFit: "cover",
-                                    }}
-                                    width="40"
-                                  />
-                                  <div className="grid gap-1.5">
-                                    <h3 className="font-semibold">Charlie</h3>
-                                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                                      This is regarding my subscription.
-                                    </p>
-                                  </div>
-                                </div>
-                              </Link>
-                            </li>
-                            <li className="flex items-center justify-between p-4 hover:bg-gray-100">
-                              <Link href="suggestion/123">
-                                <div className="flex items-center gap-4">
-                                  <img
-                                    alt="Avatar"
-                                    className="rounded-full"
-                                    height="40"
-                                    src="https://github.com/shadcn.png"
-                                    style={{
-                                      aspectRatio: "40/40",
-                                      objectFit: "cover",
-                                    }}
-                                    width="40"
-                                  />
-                                  <div className="grid gap-1.5">
-                                    <h3 className="font-semibold">Charlie</h3>
-                                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                                      This is regarding my subscription.
-                                    </p>
-                                  </div>
-                                </div>
-                              </Link>
-                            </li>
-                            <li className="flex items-center justify-between p-4 hover:bg-gray-100">
-                              <Link href="suggestion/123">
-                                <div className="flex items-center gap-4">
-                                  <img
-                                    alt="Avatar"
-                                    className="rounded-full"
-                                    height="40"
-                                    src="https://github.com/shadcn.png"
-                                    style={{
-                                      aspectRatio: "40/40",
-                                      objectFit: "cover",
-                                    }}
-                                    width="40"
-                                  />
-                                  <div className="grid gap-1.5">
-                                    <h3 className="font-semibold">Charlie</h3>
-                                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                                      This is regarding my subscription.
-                                    </p>
-                                  </div>
-                                </div>
-                              </Link>
-                            </li>
-                          </ul>
+                          <Acceptable />
+                          <Approvetable />
                         </ScrollArea>
                       </CardContent>
                     </Card>
