@@ -14,43 +14,50 @@ interface SuggestItems {
 export default function SuggestTable() {
   const [suggestItems, setSuggestItems] = useState<SuggestItems[]>([]);
 
-  let gocount =1;
+  let gocount = 1;
   useEffect(() => {
-
-    if(gocount == 1){
-        fetch("/api/suggest/get")
+    if (gocount == 1) {
+      fetch("/api/user/")
         .then((response) => response.json())
         .then((data) => {
-  
-          const lostItemIds = data.flattenedArray;
-          lostItemIds.map((item: any) => {
-            // renderTable(item.foundItemId,item.id);
-            fetch(`/api/found/${item.foundItemId}`)
-            .then((response) => response.json())
-            .then((data) => {
-      
-              const { id, title, description, images } = data;
-              const suggestItem = {
-                image: images.toString(),
-                name: title,
-                description: description,
-                id: id,
-                sugessId:item.id
-              };
-      
-              setSuggestItems((prevItems) => [...prevItems, suggestItem]);
-            
-            })
-            .catch((error) => {
-              console.error("Error fetching data:", error);
-            });
-          });
-        })
-        .catch((error) => {
-          console.error("Error fetching user data:", error);
+          if (data == null) {
+            console.log("value null");
+          } else {
+            fetch("/api/suggest/get")
+              .then((response) => response.json())
+              .then((data) => {
+                const lostItemIds = data.flattenedArray;
+                lostItemIds.map((item: any) => {
+                  // renderTable(item.foundItemId,item.id);
+                  fetch(`/api/found/${item.foundItemId}`)
+                    .then((response) => response.json())
+                    .then((data) => {
+                      const { id, title, description, images } = data;
+                      const suggestItem = {
+                        image: images.toString(),
+                        name: title,
+                        description: description,
+                        id: id,
+                        sugessId: item.id,
+                      };
+
+                      setSuggestItems((prevItems) => [
+                        ...prevItems,
+                        suggestItem,
+                      ]);
+                    })
+                    .catch((error) => {
+                      console.error("Error fetching data:", error);
+                    });
+                });
+              })
+              .catch((error) => {
+                console.error("Error fetching user data:", error);
+              });
+          }
         });
-      }
-      gocount++;
+    }
+    gocount++;
   }, []);
 
   return (
@@ -85,7 +92,7 @@ export default function SuggestTable() {
                 pathname: "/suggestion",
                 query: {
                   id: item.id,
-                  sugessId:item.sugessId,
+                  sugessId: item.sugessId,
                 },
               }}
             >
