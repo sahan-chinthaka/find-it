@@ -19,35 +19,46 @@ export default function Acceptable() {
   let gocount = 1;
   useEffect(() => {
     if (gocount == 1) {
-      fetch("/api/suggest/accept")
+
+      fetch("/api/user/")
         .then((response) => response.json())
         .then((data) => {
-          const lostItemIds = data.flattenedArray;
-          lostItemIds.map((item: any) => {
-            // renderTable(item.foundItemId,item.id);
-            fetch(`/api/found/${item.foundItemId}`)
-              .then((response) => response.json())
-              .then((data) => {
-                const { id, title, description, images } = data;
-                const suggestItem = {
-                  image: images.toString(),
-                  name: title,
-                  description: description,
-                  id: id,
-                  sugessId: item.id,
-                  stages: item.stages,
-                };
-
-                setSuggestItems((prevItems) => [...prevItems, suggestItem]);
-              })
-              .catch((error) => {
-                console.error("Error fetching data:", error);
+          if (data == null) {
+            console.log("value null")
+          } else {
+            fetch("/api/suggest/accept")
+            .then((response) => response.json())
+            .then((data) => {
+              const lostItemIds = data.flattenedArray;
+              lostItemIds.map((item: any) => {
+                // renderTable(item.foundItemId,item.id);
+                fetch(`/api/found/${item.foundItemId}`)
+                  .then((response) => response.json())
+                  .then((data) => {
+                    const { id, title, description, images } = data;
+                    const suggestItem = {
+                      image: images.toString(),
+                      name: title,
+                      description: description,
+                      id: id,
+                      sugessId: item.id,
+                      stages: item.stages,
+                    };
+    
+                    setSuggestItems((prevItems) => [...prevItems, suggestItem]);
+                  })
+                  .catch((error) => {
+                    console.error("Error fetching data:", error);
+                  });
               });
-          });
+            })
+            .catch((error) => {
+              console.error("Error fetching user data:", error);
+            });
+          }
         })
-        .catch((error) => {
-          console.error("Error fetching user data:", error);
-        });
+       
+      
     }
     gocount++;
   }, []);
