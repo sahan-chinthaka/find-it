@@ -1,5 +1,3 @@
-
-
 import * as React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -8,6 +6,7 @@ import { Tabs, TabsContent } from "@/components/ui/tabs";
 import Link from "next/link";
 import SuggestTable from "@/components/suggestTable";
 import Approvetable from "@/components/approvetable";
+import Acceptable from "@/components/acceptTable";
 
 export default function HomePage() {
   return (
@@ -43,9 +42,7 @@ export default function HomePage() {
                     </CardHeader>
                     <CardContent>
                       <div className="text-2xl font-bold">8</div>
-                      <p className="text-xs text-muted-foreground">
-                        
-                      </p>
+                      <p className="text-xs text-muted-foreground"></p>
                     </CardContent>
                   </Card>
                   <Card>
@@ -70,9 +67,7 @@ export default function HomePage() {
                     </CardHeader>
                     <CardContent>
                       <div className="text-2xl font-bold">0</div>
-                      <p className="text-xs text-muted-foreground">
-                        
-                      </p>
+                      <p className="text-xs text-muted-foreground"></p>
                     </CardContent>
                   </Card>
                   <Card>
@@ -96,9 +91,7 @@ export default function HomePage() {
                     </CardHeader>
                     <CardContent>
                       <div className="text-2xl font-bold">2</div>
-                      <p className="text-xs text-muted-foreground">
-                       
-                      </p>
+                      <p className="text-xs text-muted-foreground"></p>
                     </CardContent>
                   </Card>
                   <Card>
@@ -121,9 +114,7 @@ export default function HomePage() {
                     </CardHeader>
                     <CardContent>
                       <div className="text-2xl font-bold">0</div>
-                      <p className="text-xs text-muted-foreground">
-                      
-                      </p>
+                      <p className="text-xs text-muted-foreground"></p>
                     </CardContent>
                   </Card>
                 </div>
@@ -138,7 +129,8 @@ export default function HomePage() {
                       </CardHeader>
                       <CardContent className="p-0">
                         <ScrollArea className="h-[300px] w-full rounded-md border p-4">
-                          <Approvetable/>
+                          <Acceptable />
+                          <Approvetable />
                         </ScrollArea>
                       </CardContent>
                     </Card>

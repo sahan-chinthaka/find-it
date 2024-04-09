@@ -13,23 +13,21 @@ interface SuggestItems {
   stages: string;
 }
 
-export default function Approvetable() {
+export default function Acceptable() {
   const [suggestItems, setSuggestItems] = useState<SuggestItems[]>([]);
 
   let gocount = 1;
   useEffect(() => {
     if (gocount == 1) {
-      fetch("/api/suggest/request")
+      fetch("/api/suggest/accept")
         .then((response) => response.json())
         .then((data) => {
           const lostItemIds = data.flattenedArray;
           lostItemIds.map((item: any) => {
-            
             // renderTable(item.foundItemId,item.id);
             fetch(`/api/found/${item.foundItemId}`)
               .then((response) => response.json())
               .then((data) => {
-                
                 const { id, title, description, images } = data;
                 const suggestItem = {
                   image: images.toString(),
@@ -37,7 +35,7 @@ export default function Approvetable() {
                   description: description,
                   id: id,
                   sugessId: item.id,
-                  stages: item.stages
+                  stages: item.stages,
                 };
 
                 setSuggestItems((prevItems) => [...prevItems, suggestItem]);
@@ -56,19 +54,9 @@ export default function Approvetable() {
 
   return (
     <ul className="divide-y">
-      {suggestItems.length === 0 ? (
-        <section className="flex items-start  py-6">
-          <div className="container flex flex-col items-center px-4 space-y-4">
-            <div className="flex flex-col items-center space-y-2 text-center">
-              <p className="text-lg font-medium text-gray-500 dark:text-gray-400">
-              There are no pending requests for your found item.
-              </p>
-            </div>
-          </div>
-        </section>
-      ) : (
-        suggestItems.map((item) => (
-          <li
+      {suggestItems.map((item) => (
+        <div key={item.id}>
+           <li
             className="flex items-center justify-between p-4 hover:bg-gray-100"
             key={item.id}
           >
@@ -104,14 +92,14 @@ export default function Approvetable() {
                     </div>
                   </div>
                   <div className="flex flex-col items-center justify-center col-span-2 ml-5 ">
-                    <Button>{item.stages}</Button>
+                    <Button className="bg-green-500">{item.stages}</Button>
                   </div>
                 </div>
               </div>
             </Link>
           </li>
-        ))
-      )}
+        </div>
+      ))}
     </ul>
   );
 }
