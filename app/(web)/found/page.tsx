@@ -50,3 +50,5 @@ async function FoundPage() {
 }
 
 export default FoundPage;
+
+export const dynamic = "force-dynamic";
