@@ -188,10 +188,10 @@ export default function page({
                         variant="destructive"
                         onClick={() => notmindbtn()}
                       >
-                        Not mind
+                        Not mine
                       </Button>
                       <Button className="mx-4" onClick={() => thismindbtn()}>
-                        This Mind
+                        This Mine
                       </Button>
                     </CardFooter>
                   </Card>
