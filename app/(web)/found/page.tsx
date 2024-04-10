@@ -13,7 +13,7 @@ async function FoundPage() {
 
 	return (
 		<div>
-			<Link className="text-blue-500" href={"/new-found"}>New Found</Link>
+			<Link className="text-blue-500" href={"/new-found"}>Add New Found</Link>
 			{data.map((a: any) => (
 				<div key={a.id} className="p-2 m-2 bg-slate-200">
 					<p>{a.title}</p>
