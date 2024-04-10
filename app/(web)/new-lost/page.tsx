@@ -74,7 +74,7 @@ function NewLostPage() {
 							.then((res) => res.json())
 							.then((res) => {
 								console.log(res);
-								router.push("/lost/" + lostId);
+								window.location.href = "/lost";
 							})
 							.finally(() => {
 								setDisable(false);
@@ -269,7 +269,7 @@ function NewLostPage() {
 	);
 }
 
-export default function Test () {
+export default function Test() {
 	const [loaded, setLoaded] = useState(false);
 
 	useEffect(() => {
