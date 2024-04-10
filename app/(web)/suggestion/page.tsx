@@ -26,7 +26,7 @@ interface FoundItems {
   id: string;
   type: string;
   location: string;
-  images: number;
+  images: string[];
 }
 
 export default function page({
@@ -54,7 +54,7 @@ export default function page({
             id: id,
             type: type,
             location: location,
-            images: images.toString(), // Assuming you want images as a string
+            images: images, // Assuming you want images as a string
           };
           setFoundItems((prevItems) => [...prevItems, item]);
         })
@@ -131,34 +131,15 @@ export default function page({
                 <div className="flex flex-col xl:col-span-1 col-span-1 p-5 m-3 ">
                   <Carousel>
                     <CarouselContent>
-                      <CarouselItem>
-                        <img
-                          src="https://github.com/shadcn.png"
-                          alt="@shadcn"
-                          className="w-100 h-100"
-                        />
-                      </CarouselItem>
-                      <CarouselItem>
-                        <img
-                          src="https://github.com/shadcn.png"
-                          alt="@shadcn"
-                          className="w-100 h-100"
-                        />
-                      </CarouselItem>
-                      <CarouselItem>
-                        <img
-                          src="https://github.com/shadcn.png"
-                          alt="@shadcn"
-                          className="w-100 h-100"
-                        />
-                      </CarouselItem>
-                      <CarouselItem>
-                        <img
-                          src="https://github.com/shadcn.png"
-                          alt="@shadcn"
-                          className="w-100 h-100"
-                        />
-                      </CarouselItem>
+                      {item.images.map((image, index) => (
+                        <CarouselItem key={index}>
+                          <img
+                            src={image}
+                            alt="@shadcn"
+                            className="w-100 h-100"
+                          />
+                        </CarouselItem>
+                      ))}
                     </CarouselContent>
                   </Carousel>
                 </div>
