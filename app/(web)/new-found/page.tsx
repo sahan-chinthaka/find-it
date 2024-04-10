@@ -64,7 +64,7 @@ function NewFoundPage() {
 						.then((res) => res.json())
 						.then((res) => {
 							console.log(res);
-							router.push("/found/" + foundId);
+							window.location.href = "/found";
 						}).finally(() => setDisable(false));
 				}
 			});
