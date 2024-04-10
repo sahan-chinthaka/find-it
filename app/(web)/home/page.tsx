@@ -1,3 +1,4 @@
+"use client";
 import * as React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -7,8 +8,67 @@ import Link from "next/link";
 import SuggestTable from "@/components/suggestTable";
 import Approvetable from "@/components/approvetable";
 import Acceptable from "@/components/acceptTable";
+import { useState } from "react";
 
 export default function HomePage() {
+  const [suggestItemcount, setsuggestItemcount] = useState<number>(0);
+  const [lostmcount, setlostmcount] = useState<number>(0);
+  const [foundmcount, setfoundmcount] = useState<number>(0);
+
+
+
+  let gocount = 1;
+  React.useEffect(() => {
+    if (gocount == 1) {
+      fetch("/api/user/")
+        .then((response) => response.json())
+        .then((data) => {
+          if (data == null) {
+            console.log("value null");
+          } else {
+            fetch("/api/suggest/get")
+              .then((response) => response.json())
+              .then((data) => {
+
+                setsuggestItemcount(data.flattenedArray.length);
+
+                const lostItemIds = data.flattenedArray;
+                lostItemIds.map((item: any) => {
+                  // renderTable(item.foundItemId,item.id);
+                  fetch(`/api/found/${item.foundItemId}`)
+                    .then((response) => response.json())
+                    .then((data) => {
+                      // console.log(data)
+                    })
+                    .catch((error) => {
+                      console.error("Error fetching data:", error);
+                    });
+                });
+              })
+              .catch((error) => {
+                console.error("Error fetching user data:", error);
+              });
+          }
+        });
+
+        fetch("/api/lost/")
+        .then((response) => response.json())
+        .then((data) => {
+          setlostmcount(data.length)
+        })
+
+        fetch("/api/found/")
+        .then((response) => response.json())
+        .then((data) => {
+          setfoundmcount(data.length)
+        })
+
+
+    }
+    gocount++;
+  }, []);
+
+
   return (
     <div>
       <div>
@@ -41,7 +101,7 @@ export default function HomePage() {
                       </svg>
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold">8</div>
+                      <div className="text-2xl font-bold">{lostmcount}</div>
                       <p className="text-xs text-muted-foreground"></p>
                     </CardContent>
                   </Card>
@@ -66,7 +126,7 @@ export default function HomePage() {
                       </svg>
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold">0</div>
+                      <div className="text-2xl font-bold">{foundmcount}</div>
                       <p className="text-xs text-muted-foreground"></p>
                     </CardContent>
                   </Card>
@@ -90,14 +150,14 @@ export default function HomePage() {
                       </svg>
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold">2</div>
+                      <div className="text-2xl font-bold">{suggestItemcount}</div>
                       <p className="text-xs text-muted-foreground"></p>
                     </CardContent>
                   </Card>
                   <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                       <CardTitle className="text-sm font-medium">
-                        Finish Item
+                      Total founded Item
                       </CardTitle>
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -124,7 +184,7 @@ export default function HomePage() {
                     <Card>
                       <CardHeader className="flex items-start gap-4">
                         <CardTitle className="text-base">
-                          Approve Items
+                          Accept Items
                         </CardTitle>
                       </CardHeader>
                       <CardContent className="p-0">
