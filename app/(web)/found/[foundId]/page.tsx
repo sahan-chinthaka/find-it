@@ -5,7 +5,6 @@ async function FoundItemView({ params }: { params: { foundId: string } }) {
 
 	const result = await fetch(process.env.BACKEND + "/api/found/" + foundId);
 	const json = await result.json();
-	console.log(json)
 
 	return (
 		<div>

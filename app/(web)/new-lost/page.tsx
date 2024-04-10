@@ -20,6 +20,7 @@ import { useForm } from "react-hook-form";
 import usePlacesAutocomplete, { LatLng, getGeocode, getLatLng } from "use-places-autocomplete";
 import { z } from "zod";
 import { Loader } from "@googlemaps/js-api-loader";
+import { useRouter } from "next/navigation";
 
 export interface Place {
 	place_id: string;
@@ -30,6 +31,7 @@ export interface Place {
 
 function NewLostPage() {
 	const [places, setPlaces] = useState<Place[]>([]);
+	const router = useRouter();
 
 	const autoComplete = usePlacesAutocomplete({
 		debounce: 300,
@@ -64,6 +66,7 @@ function NewLostPage() {
 
 					if (res.id) {
 						form_data.append("id", res["id"]);
+						const lostId = res.id;
 						fetch("/api/lost", {
 							method: "PUT",
 							body: form_data,
@@ -71,6 +74,7 @@ function NewLostPage() {
 							.then((res) => res.json())
 							.then((res) => {
 								console.log(res);
+								router.push("/lost/" + lostId);
 							})
 							.finally(() => {
 								setDisable(false);
