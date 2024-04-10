@@ -19,46 +19,46 @@ export default function Acceptable() {
   let gocount = 1;
   useEffect(() => {
     if (gocount == 1) {
-
       fetch("/api/user/")
         .then((response) => response.json())
         .then((data) => {
           if (data == null) {
-            console.log("value null")
+            console.log("value null");
           } else {
             fetch("/api/suggest/accept")
-            .then((response) => response.json())
-            .then((data) => {
-              const lostItemIds = data.flattenedArray;
-              lostItemIds.map((item: any) => {
-                // renderTable(item.foundItemId,item.id);
-                fetch(`/api/found/${item.foundItemId}`)
-                  .then((response) => response.json())
-                  .then((data) => {
-                    const { id, title, description, images } = data;
-                    const suggestItem = {
-                      image: images.toString(),
-                      name: title,
-                      description: description,
-                      id: id,
-                      sugessId: item.id,
-                      stages: item.stages,
-                    };
-    
-                    setSuggestItems((prevItems) => [...prevItems, suggestItem]);
-                  })
-                  .catch((error) => {
-                    console.error("Error fetching data:", error);
-                  });
+              .then((response) => response.json())
+              .then((data) => {
+                const lostItemIds = data.flattenedArray;
+                lostItemIds.map((item: any) => {
+                  // renderTable(item.foundItemId,item.id);
+                  fetch(`/api/found/${item.foundItemId}`)
+                    .then((response) => response.json())
+                    .then((data) => {
+                      const { id, title, description, images } = data;
+                      const suggestItem = {
+                        image: images.toString(),
+                        name: title,
+                        description: description,
+                        id: id,
+                        sugessId: item.id,
+                        stages: item.stages,
+                      };
+
+                      setSuggestItems((prevItems) => [
+                        ...prevItems,
+                        suggestItem,
+                      ]);
+                    })
+                    .catch((error) => {
+                      console.error("Error fetching data:", error);
+                    });
+                });
+              })
+              .catch((error) => {
+                console.error("Error fetching user data:", error);
               });
-            })
-            .catch((error) => {
-              console.error("Error fetching user data:", error);
-            });
           }
-        })
-       
-      
+        });
     }
     gocount++;
   }, []);
@@ -67,17 +67,17 @@ export default function Acceptable() {
     <ul className="divide-y">
       {suggestItems.map((item) => (
         <div key={item.id}>
-           <li
+          <li
             className="flex items-center justify-between p-4 hover:bg-gray-100"
             key={item.id}
           >
-            {/* <Link href={`suggestion/${item.id}`}> */}
             <Link
               href={{
-                pathname: "/suggestion",
+                pathname: "/accept",
                 query: {
                   id: item.id,
                   sugessId: item.sugessId,
+                  stages: item.stages,
                 },
               }}
             >
