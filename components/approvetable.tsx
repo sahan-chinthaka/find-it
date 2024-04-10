@@ -3,6 +3,7 @@
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { Button } from "./ui/button";
+import { s } from "vitest/dist/reporters-P7C2ytIv.js";
 
 interface SuggestItems {
   image: string;
@@ -11,6 +12,7 @@ interface SuggestItems {
   id: string;
   sugessId: string;
   stages: string;
+  lostitemid: string;
 }
 
 export default function Approvetable() {
@@ -19,36 +21,47 @@ export default function Approvetable() {
   let gocount = 1;
   useEffect(() => {
     if (gocount == 1) {
-      fetch("/api/suggest/request")
+      fetch("/api/user/")
         .then((response) => response.json())
         .then((data) => {
-          const lostItemIds = data.flattenedArray;
-          lostItemIds.map((item: any) => {
-            
-            // renderTable(item.foundItemId,item.id);
-            fetch(`/api/found/${item.foundItemId}`)
+          if (data == null) {
+            console.log("value null");
+          } else {
+            fetch("/api/suggest/request")
               .then((response) => response.json())
               .then((data) => {
-                
-                const { id, title, description, images } = data;
-                const suggestItem = {
-                  image: images.toString(),
-                  name: title,
-                  description: description,
-                  id: id,
-                  sugessId: item.id,
-                  stages: item.stages
-                };
+                const lostItemIds = data.flattenedArray;
 
-                setSuggestItems((prevItems) => [...prevItems, suggestItem]);
+                lostItemIds.map((item: any) => {
+                  // renderTable(item.foundItemId,item.id);
+                  fetch(`/api/found/${item.foundItemId}`)
+                    .then((response) => response.json())
+                    .then((data) => {
+                      const { id, title, description, images } = data;
+                      const suggestItem = {
+                        image: images.toString(),
+                        name: title,
+                        description: description,
+                        id: id,
+                        sugessId: item.id,
+                        stages: item.stages,
+                        lostitemid: item.lostItemId,
+                      };
+
+                      setSuggestItems((prevItems) => [
+                        ...prevItems,
+                        suggestItem,
+                      ]);
+                    })
+                    .catch((error) => {
+                      console.error("Error fetching data:", error);
+                    });
+                });
               })
               .catch((error) => {
-                console.error("Error fetching data:", error);
+                console.error("Error fetching user data:", error);
               });
-          });
-        })
-        .catch((error) => {
-          console.error("Error fetching user data:", error);
+          }
         });
     }
     gocount++;
@@ -61,7 +74,7 @@ export default function Approvetable() {
           <div className="container flex flex-col items-center px-4 space-y-4">
             <div className="flex flex-col items-center space-y-2 text-center">
               <p className="text-lg font-medium text-gray-500 dark:text-gray-400">
-              There are no pending requests for your found item.
+                There are no pending requests for your found item.
               </p>
             </div>
           </div>
@@ -75,10 +88,11 @@ export default function Approvetable() {
             {/* <Link href={`suggestion/${item.id}`}> */}
             <Link
               href={{
-                pathname: "/suggestion",
+                pathname: "/request",
                 query: {
-                  id: item.id,
+                  id: item.lostitemid,
                   sugessId: item.sugessId,
+                  stages: item.stages,
                 },
               }}
             >
@@ -89,7 +103,7 @@ export default function Approvetable() {
                       alt="Avatar"
                       className="rounded-full"
                       height="40"
-                      src="https://github.com/shadcn.png"
+                      src={item.image}
                       style={{
                         aspectRatio: "40/40",
                         objectFit: "cover",
