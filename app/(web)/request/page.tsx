@@ -42,6 +42,7 @@ export default function Page({
   searchParams: {
     id: string;
     sugessId: string;
+    stages:string;
   };
 }) {
   let count = 1;
@@ -201,7 +202,7 @@ export default function Page({
                     </TabsContent>
                   </Tabs>
                 </CardContent>
-                <CardFooter>
+                <CardFooter className={ searchParams.stages === "Request" ? "block" : "hidden"}>
                   <Button variant="destructive" onClick={() => clickreject()}>Reject</Button>
                   <Button className="mx-4" onClick={() => clickaccept()}>Accept</Button>
                 </CardFooter>
