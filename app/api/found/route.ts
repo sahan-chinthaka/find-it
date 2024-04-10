@@ -58,8 +58,8 @@ async function makeSugestions(keywords: string[], found_id: string) {
 				}
 			}
 		}
-		// Add only if matching is greater than 60%
-		if (match > 0.6) final.push({ ...item, match });
+		// Add only if matching is greater than 40%
+		if (match > 0.4) final.push({ ...item, match });
 	});
 	final = final.sort((a, b) => b.match - a.match).slice(0, 5);
 	await prisma.suggestItem.createMany({
