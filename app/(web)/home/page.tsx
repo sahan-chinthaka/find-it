@@ -29,21 +29,7 @@ export default function HomePage() {
             fetch("/api/suggest/get")
               .then((response) => response.json())
               .then((data) => {
-
                 setsuggestItemcount(data.flattenedArray.length);
-
-                const lostItemIds = data.flattenedArray;
-                lostItemIds.map((item: any) => {
-                  // renderTable(item.foundItemId,item.id);
-                  fetch(`/api/found/${item.foundItemId}`)
-                    .then((response) => response.json())
-                    .then((data) => {
-                      // console.log(data)
-                    })
-                    .catch((error) => {
-                      console.error("Error fetching data:", error);
-                    });
-                });
               })
               .catch((error) => {
                 console.error("Error fetching user data:", error);
