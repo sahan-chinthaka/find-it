@@ -48,3 +48,5 @@ export default async function LostPage() {
 		</>
 	);
 }
+
+export const dynamic = "force-dynamic";
