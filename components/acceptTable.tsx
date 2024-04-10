@@ -88,7 +88,7 @@ export default function Acceptable() {
                       alt="Avatar"
                       className="rounded-full"
                       height="40"
-                      src="https://github.com/shadcn.png"
+                      src={item.image}
                       style={{
                         aspectRatio: "40/40",
                         objectFit: "cover",
