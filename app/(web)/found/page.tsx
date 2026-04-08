@@ -4,6 +4,8 @@ import { PlusIcon } from "lucide-react";
 import { cookies } from "next/headers";
 import Link from "next/link";
 
+export const dynamic = 'force-dynamic';
+
 async function FoundPage() {
 	const c = cookies();
 	const founds = await fetch(process.env.BACKEND + "/api/found/", {
@@ -50,5 +52,3 @@ async function FoundPage() {
 }
 
 export default FoundPage;
-
-export const dynamic = "force-dynamic";

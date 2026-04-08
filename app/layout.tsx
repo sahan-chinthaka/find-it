@@ -4,6 +4,8 @@ import { Toaster } from "@/components/ui/toaster";
 import Script from "next/script";
 import Navbar from "@/components/navbar";
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
 	title: "FindIt",
 	description: "AI based lost thing founding helper",

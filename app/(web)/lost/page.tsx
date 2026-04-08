@@ -4,6 +4,8 @@ import { PlusIcon } from "lucide-react";
 import { cookies } from "next/headers";
 import Link from "next/link";
 
+export const dynamic = 'force-dynamic';
+
 export default async function LostPage() {
 	const c = cookies();
 	const founds = await fetch(process.env.BACKEND + "/api/lost/", {
@@ -48,5 +50,3 @@ export default async function LostPage() {
 		</>
 	);
 }
-
-export const dynamic = "force-dynamic";
