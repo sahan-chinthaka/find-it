@@ -5,61 +5,73 @@ import * as React from "react";
 import Acceptable from "@/components/acceptTable";
 import Approvetable from "@/components/approvetable";
 import SuggestTable from "@/components/suggestTable";
+import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { useState } from "react";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
 
 export default function HomePage() {
+  const { status } = useSession();
+  const isAuthenticated = status === "authenticated";
   const [suggestItemcount, setsuggestItemcount] = useState<number>(0);
   const [lostmcount, setlostmcount] = useState<number>(0);
   const [foundmcount, setfoundmcount] = useState<number>(0);
 
-  let gocount = 1;
   React.useEffect(() => {
-    if (gocount == 1) {
-      fetch("/api/user/")
-        .then((response) => response.json())
-        .then((data) => {
-          if (data == null) {
-            console.log("value null");
-          } else {
-            fetch("/api/suggest/get")
-              .then((response) => response.json())
-              .then((data) => {
-                setsuggestItemcount(data.flattenedArray.length);
-              })
-              .catch((error) => {
-                console.error("Error fetching user data:", error);
-              });
-          }
-        });
-
-      fetch("/api/lost/")
-        .then((response) => response.json())
-        .then((data) => {
-          setlostmcount(data.length);
-        });
-
-      fetch("/api/found/")
-        .then((response) => response.json())
-        .then((data) => {
-          setfoundmcount(data.length);
-        });
+    if (!isAuthenticated) {
+      setsuggestItemcount(0);
+      setlostmcount(0);
+      setfoundmcount(0);
+      return;
     }
-    gocount++;
-  }, []);
+
+    Promise.all([fetch("/api/suggest/get"), fetch("/api/lost/"), fetch("/api/found/")])
+      .then(async ([suggestRes, lostRes, foundRes]) => {
+        const [suggestData, lostData, foundData] = await Promise.all([
+          suggestRes.json(),
+          lostRes.json(),
+          foundRes.json(),
+        ]);
+
+        setsuggestItemcount(suggestData.flattenedArray.length);
+        setlostmcount(lostData.length);
+        setfoundmcount(foundData.length);
+      })
+      .catch((error) => {
+        console.error("Error fetching dashboard data:", error);
+      });
+  }, [isAuthenticated]);
 
   return (
     <div className="page-wrap space-y-6">
       <div className="rounded-3xl border border-orange-200/70 bg-gradient-to-r from-orange-50 via-amber-50 to-emerald-50 p-6 shadow-inner">
         <p className="text-sm font-semibold uppercase tracking-[0.16em] text-orange-700">Control Center</p>
-        <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-900 md:text-4xl">Hi, welcome back</h2>
-        <p className="mt-2 max-w-2xl text-sm text-slate-600 md:text-base">
-          Track every report, review possible matches, and help reunite lost items with their owners.
-        </p>
+        {isAuthenticated ? (
+          <>
+            <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-900 md:text-4xl">Hi, welcome back</h2>
+            <p className="mt-2 max-w-2xl text-sm text-slate-600 md:text-base">
+              Track every report, review possible matches, and help reunite lost items with their owners.
+            </p>
+          </>
+        ) : (
+          <>
+            <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-900 md:text-4xl">Welcome to FindIt</h2>
+            <p className="mt-2 max-w-2xl text-sm text-slate-600 md:text-base">
+              Sign in to view your dashboard, suggestions, and request queues.
+            </p>
+            <div className="mt-5">
+              <Link href="/api/auth/signin">
+                <Button className="rounded-full bg-orange-600 px-6 text-white hover:bg-orange-700">Login to Continue</Button>
+              </Link>
+            </div>
+          </>
+        )}
       </div>
 
-      <ScrollArea className="h-full">
+      {isAuthenticated ? (
+        <ScrollArea className="h-full">
         <div className="flex-1 space-y-4">
           <Tabs defaultValue="overview" className="space-y-4">
             <TabsContent value="overview" className="space-y-4">
@@ -187,7 +199,8 @@ export default function HomePage() {
             </TabsContent>
           </Tabs>
         </div>
-      </ScrollArea>
+        </ScrollArea>
+      ) : null}
     </div>
   );
 }

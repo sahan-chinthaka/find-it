@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import {
   DropdownMenu,
@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import { Compass, Menu } from "lucide-react";
+import { useSession } from "next-auth/react";
 
 import Link from "next/link";
 
@@ -17,23 +18,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function Navbar() {
   const [state, setState] = useState(false);
-  const [userimg, setuserimg] = useState("https://github.com/shadcn.png");
-  const [userlogin, setuserlogin] = useState(false);
-
-  useEffect(() => {
-    fetch("/api/user")
-      .then((response) => response.json())
-      .then((data) => {
-        const image = data.user.image;
-        if (image) {
-          setuserlogin(true);
-          setuserimg(image);
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching user data:", error);
-      });
-  }, []);
+  const { data: session, status } = useSession();
+  const isAuthenticated = status === "authenticated";
+  const userImage = session?.user?.image ?? "https://github.com/shadcn.png";
 
   return (
     <div className="sticky top-0 z-40 border-b border-white/50 bg-white/60 backdrop-blur-lg">
@@ -70,29 +57,30 @@ export default function Navbar() {
                 <Link href="/new-lost">Post Item</Link>
               </li>
 
-              <DropdownMenu>
-                <DropdownMenuTrigger>
-                  <Avatar className="ring-2 ring-white shadow-sm">
-                    <AvatarImage src={userimg} />
-                    <AvatarFallback>CN</AvatarFallback>
-                  </Avatar>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="mt-2 w-44 rounded-xl border-slate-200 bg-white/95">
-                  <DropdownMenuItem>
-                    <Link href="/account">My Account</Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>Settings</DropdownMenuItem>
-                  <DropdownMenuSeparator />
-
-                  <DropdownMenuItem className={userlogin ? "hidden" : "block"}>
-                    <Link href="/api/auth/signin">Login</Link>
-                  </DropdownMenuItem>
-
-                  <DropdownMenuItem className={userlogin ? "block" : "hidden"}>
-                    <Link href="/api/auth/signout">Logout</Link>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              {isAuthenticated ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger>
+                    <Avatar className="ring-2 ring-white shadow-sm">
+                      <AvatarImage src={userImage} />
+                      <AvatarFallback>ME</AvatarFallback>
+                    </Avatar>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="mt-2 w-44 rounded-xl border-slate-200 bg-white/95">
+                    <DropdownMenuItem>
+                      <Link href="/account">My Account</Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>Settings</DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem>
+                      <Link href="/api/auth/signout">Logout</Link>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <li className="rounded-full border border-orange-200 bg-white px-3 py-2 font-medium text-orange-700 shadow-sm transition hover:bg-orange-50">
+                  <Link href="/api/auth/signin">Login</Link>
+                </li>
+              )}
             </ul>
           </div>
         </div>

@@ -11,6 +11,8 @@ import { Loader } from "@googlemaps/js-api-loader";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AdvancedMarker, APIProvider, Map } from "@vis.gl/react-google-maps";
 import { format } from "date-fns";
+import Link from "next/link";
+import { useSession } from "next-auth/react";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -290,8 +292,13 @@ function NewFoundPage() {
 
 export default function Test() {
   const [loaded, setLoaded] = useState(false);
+  const { status } = useSession();
 
   useEffect(() => {
+    if (status !== "authenticated") {
+      return;
+    }
+
     const loader = new Loader({
       apiKey: process.env.NEXT_PUBLIC_GOOGLE_MAP_API as string,
       libraries: ["places"],
@@ -299,7 +306,28 @@ export default function Test() {
     loader.load().then(() => {
       setLoaded(true);
     });
-  }, []);
+  }, [status]);
+
+  if (status === "loading") return "Loading";
+
+  if (status !== "authenticated") {
+    return (
+      <div className="page-wrap space-y-6">
+        <div className="rounded-3xl border border-teal-200/70 bg-gradient-to-r from-teal-50 via-cyan-50 to-emerald-50 p-6 shadow-inner">
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-teal-700">Create Report</p>
+          <h1 className="mt-2 text-3xl font-bold tracking-tight text-slate-900 md:text-4xl">Report a Found Item</h1>
+          <p className="mt-2 max-w-2xl text-sm text-slate-600 md:text-base">
+            Please log in before creating a found item report.
+          </p>
+          <div className="mt-5">
+            <Link href="/api/auth/signin">
+              <Button className="rounded-full bg-teal-600 px-6 text-white hover:bg-teal-700">Login to Continue</Button>
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (!loaded) return "Loading";
 

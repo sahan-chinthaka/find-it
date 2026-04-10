@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 
 interface SuggestItems {
   image: string;
@@ -12,50 +13,45 @@ interface SuggestItems {
 }
 
 export default function SuggestTable() {
+  const { status } = useSession();
+  const isAuthenticated = status === "authenticated";
   const [suggestItems, setSuggestItems] = useState<SuggestItems[]>([]);
 
-  let gocount = 1;
   useEffect(() => {
-    if (gocount == 1) {
-      fetch("/api/user/")
-        .then((response) => response.json())
-        .then((data) => {
-          if (data == null) {
-            console.log("value null");
-          } else {
-            fetch("/api/suggest/get")
-              .then((response) => response.json())
-              .then((data) => {
-                const lostItemIds = data.flattenedArray;
-                lostItemIds.map((item: any) => {
-                  // renderTable(item.foundItemId,item.id);
-                  fetch(`/api/found/${item.foundItemId}`)
-                    .then((response) => response.json())
-                    .then((data) => {
-                      const { id, title, description, images } = data;
-                      const suggestItem = {
-                        image: images.toString(),
-                        name: title,
-                        description: description,
-                        id: id,
-                        sugessId: item.id,
-                      };
-
-                      setSuggestItems((prevItems) => [...prevItems, suggestItem]);
-                    })
-                    .catch((error) => {
-                      console.error("Error fetching data:", error);
-                    });
-                });
-              })
-              .catch((error) => {
-                console.error("Error fetching user data:", error);
-              });
-          }
-        });
+    if (!isAuthenticated) {
+      setSuggestItems([]);
+      return;
     }
-    gocount++;
-  }, []);
+
+    fetch("/api/suggest/get")
+      .then((response) => response.json())
+      .then((data) => {
+        const lostItemIds = data.flattenedArray;
+        setSuggestItems([]);
+        lostItemIds.map((item: any) => {
+          fetch(`/api/found/${item.foundItemId}`)
+            .then((response) => response.json())
+            .then((data) => {
+              const { id, title, description, images } = data;
+              const suggestItem = {
+                image: images.toString(),
+                name: title,
+                description: description,
+                id: id,
+                sugessId: item.id,
+              };
+
+              setSuggestItems((prevItems) => [...prevItems, suggestItem]);
+            })
+            .catch((error) => {
+              console.error("Error fetching data:", error);
+            });
+        });
+      })
+      .catch((error) => {
+        console.error("Error fetching user data:", error);
+      });
+  }, [isAuthenticated]);
 
   return (
     <ul className="divide-y divide-slate-200">
