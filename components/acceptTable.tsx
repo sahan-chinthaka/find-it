@@ -61,10 +61,10 @@ export default function Acceptable() {
   }, []);
 
   return (
-    <ul className="divide-y">
+    <ul className="divide-y divide-slate-200">
       {suggestItems.map((item) => (
         <div key={item.id}>
-          <li className="flex items-center justify-between p-4 hover:bg-gray-100" key={item.id}>
+          <li className="flex items-center justify-between rounded-xl p-4 transition hover:bg-orange-50" key={item.id}>
             <Link
               href={{
                 pathname: "/accept",
@@ -80,7 +80,7 @@ export default function Acceptable() {
                   <div className="flex flex-col col-span-4 ml-5 ">
                     <img
                       alt="Avatar"
-                      className="rounded-full"
+                      className="h-10 w-10 rounded-full border border-slate-200"
                       height="40"
                       src={item.image}
                       style={{
@@ -90,12 +90,12 @@ export default function Acceptable() {
                       width="40"
                     />
                     <div className="grid gap-1.5">
-                      <h3 className="font-semibold">{item.name}</h3>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">{item.description}</p>
+                      <h3 className="font-semibold text-slate-900">{item.name}</h3>
+                      <p className="text-sm text-slate-500">{item.description}</p>
                     </div>
                   </div>
                   <div className="flex flex-col items-center justify-center col-span-2 ml-5 ">
-                    <Button className="bg-green-500">{item.stages}</Button>
+                    <Button className="rounded-full bg-emerald-600 text-white hover:bg-emerald-700">{item.stages}</Button>
                   </div>
                 </div>
               </div>

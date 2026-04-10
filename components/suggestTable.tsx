@@ -58,12 +58,12 @@ export default function SuggestTable() {
   }, []);
 
   return (
-    <ul className="divide-y">
+    <ul className="divide-y divide-slate-200">
       {suggestItems.length === 0 ? (
         <section className="flex items-start  py-6">
           <div className="container flex flex-col items-center px-4 space-y-4">
             <div className="flex flex-col items-center space-y-2 text-center">
-              <p className="text-lg font-medium text-gray-500 dark:text-gray-400">No have suggestion item</p>
+              <p className="text-lg font-medium text-slate-500">No suggestion items yet</p>
             </div>
 
             <img
@@ -77,7 +77,7 @@ export default function SuggestTable() {
         </section>
       ) : (
         suggestItems.map((item) => (
-          <li className="flex items-center justify-between p-4 hover:bg-gray-100" key={item.id}>
+          <li className="flex items-center justify-between rounded-xl p-4 transition hover:bg-sky-50" key={item.id}>
             {/* <Link href={`suggestion/${item.id}`}> */}
             <Link
               href={{
@@ -91,7 +91,7 @@ export default function SuggestTable() {
               <div className="flex items-center gap-4">
                 <img
                   alt="Avatar"
-                  className="rounded-full"
+                  className="h-10 w-10 rounded-full border border-slate-200"
                   height="40"
                   src={item.image}
                   style={{
@@ -101,8 +101,8 @@ export default function SuggestTable() {
                   width="40"
                 />
                 <div className="grid gap-1.5">
-                  <h3 className="font-semibold">{item.name}</h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">{item.description}</p>
+                  <h3 className="font-semibold text-slate-900">{item.name}</h3>
+                  <p className="text-sm text-slate-500">{item.description}</p>
                 </div>
               </div>
             </Link>

@@ -108,27 +108,31 @@ export default function page({
   }
 
   return (
-    <div>
+    <div className="page-wrap">
       <>
         {foundItems.map((item, index) => {
           return (
             <div key={index}>
-              <div className="grid w-full pl-6 pr-6  xl:grid-cols-3 ">
-                <div className="flex flex-col xl:col-span-1 col-span-1 p-5 m-3 ">
+              <div className="grid w-full gap-5 xl:grid-cols-3">
+                <div className="flex flex-col xl:col-span-1 col-span-1">
                   <Carousel>
                     <CarouselContent>
                       {item.images.map((image, index) => (
                         <CarouselItem key={index}>
-                          <img src={image} alt="@shadcn" className="w-100 h-100" />
+                          <img
+                            src={image}
+                            alt="@shadcn"
+                            className="h-[420px] w-full rounded-2xl border border-slate-200 object-cover"
+                          />
                         </CarouselItem>
                       ))}
                     </CarouselContent>
                   </Carousel>
                 </div>
-                <div className="flex flex-col xl:col-span-2 col-span-1 p-5 m-3 ">
-                  <Card>
+                <div className="flex flex-col xl:col-span-2 col-span-1">
+                  <Card className="glass-card">
                     <CardHeader>
-                      <CardTitle>{item.name}</CardTitle>
+                      <CardTitle className="text-2xl">{item.name}</CardTitle>
                     </CardHeader>
                     <CardContent>
                       <Tabs defaultValue="Details" className="w-full">
@@ -159,11 +163,11 @@ export default function page({
                         </TabsContent>
                       </Tabs>
                     </CardContent>
-                    <CardFooter>
-                      <Button variant="destructive" onClick={() => notmindbtn()}>
+                    <CardFooter className="gap-3">
+                      <Button variant="destructive" className="rounded-full" onClick={() => notmindbtn()}>
                         Not mine
                       </Button>
-                      <Button className="mx-4" onClick={() => thismindbtn()}>
+                      <Button className="rounded-full bg-teal-600 text-white hover:bg-teal-700" onClick={() => thismindbtn()}>
                         This Mine
                       </Button>
                     </CardFooter>

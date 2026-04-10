@@ -116,7 +116,11 @@ function NewLostPage() {
   }
 
   return (
-    <div className="max-w-[450px] mx-auto p-4 rounded shadow-md">
+    <div className="page-wrap mx-auto max-w-2xl">
+      <div className="mb-6">
+        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">Create Report</p>
+        <h1 className="mt-1 text-3xl font-bold text-slate-900">Report a Lost Item</h1>
+      </div>
       <Form {...form}>
         <form ref={formElem} onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormField
@@ -218,7 +222,7 @@ function NewLostPage() {
             )}
           />
           <div hidden={suggestions.length === 0}>
-            <ul>
+            <ul className="rounded-xl border border-slate-200 bg-white p-2 shadow-sm">
               {suggestions.map((suggestion) => {
                 const placePrediction = suggestion.placePrediction;
                 if (!placePrediction) {
@@ -227,7 +231,7 @@ function NewLostPage() {
 
                 return (
                   <li
-                    className="bg-slate-50 p-1 m-1 rounded-lg"
+                    className="m-1 cursor-pointer rounded-lg border border-transparent bg-slate-50 p-2 text-sm transition hover:border-orange-200 hover:bg-orange-50"
                     onClick={async () => {
                       try {
                         const place = placePrediction.toPlace();
@@ -275,7 +279,7 @@ function NewLostPage() {
             </ul>
           </div>
           <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAP_API as string}>
-            <div className="w-full h-80" hidden={!location}>
+            <div className="h-80 w-full overflow-hidden rounded-2xl border border-slate-200" hidden={!location}>
               <Map gestureHandling="none" center={location} defaultZoom={10} disableDefaultUI mapId="DEMO_MAP_ID">
                 <AdvancedMarker position={location} />
               </Map>
@@ -291,8 +295,9 @@ function NewLostPage() {
                   <PopoverTrigger asChild>
                     <FormControl>
                       <Button
+                        type="button"
                         variant={"outline"}
-                        className={cn("w-[240px] pl-3 text-left font-normal", !field.value && "text-muted-foreground")}
+                        className={cn("w-full pl-3 text-left font-normal", !field.value && "text-muted-foreground")}
                       >
                         {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
                         <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
@@ -320,7 +325,7 @@ function NewLostPage() {
             </FormControl>
             <FormMessage />
           </FormItem>
-          <Button disabled={disable} type="submit">
+          <Button disabled={disable} type="submit" className="w-full rounded-full bg-orange-500 text-white hover:bg-orange-600">
             Submit
           </Button>
         </form>

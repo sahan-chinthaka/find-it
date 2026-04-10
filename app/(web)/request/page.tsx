@@ -132,25 +132,29 @@ export default function Page({
       });
   };
   return (
-    <>
+    <div className="page-wrap">
       {lostItems.map((item) => {
         return (
-          <div className="grid w-full pl-6 pr-6 xl:grid-cols-3" key={item.id}>
-            <div className="flex flex-col xl:col-span-1 col-span-1 p-5 m-3">
+          <div className="grid w-full gap-5 xl:grid-cols-3" key={item.id}>
+            <div className="flex flex-col xl:col-span-1 col-span-1">
               <Carousel>
                 <CarouselContent>
                   {item.images.map((image, index) => (
                     <CarouselItem key={index}>
-                      <img src={image} alt="@shadcn" className="w-100 h-100" />
+                      <img
+                        src={image}
+                        alt="@shadcn"
+                        className="h-[420px] w-full rounded-2xl border border-slate-200 object-cover"
+                      />
                     </CarouselItem>
                   ))}
                 </CarouselContent>
               </Carousel>
             </div>
-            <div className="flex flex-col xl:col-span-2 col-span-1 p-5 m-3">
-              <Card>
+            <div className="flex flex-col xl:col-span-2 col-span-1">
+              <Card className="glass-card">
                 <CardHeader>
-                  <CardTitle>{item.name}</CardTitle>
+                  <CardTitle className="text-2xl">{item.name}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <Tabs defaultValue="Details" className="w-full">
@@ -183,11 +187,11 @@ export default function Page({
                     </TabsContent>
                   </Tabs>
                 </CardContent>
-                <CardFooter className={searchParams.stages === "Request" ? "block" : "hidden"}>
-                  <Button variant="destructive" onClick={() => clickreject()}>
+                <CardFooter className={`${searchParams.stages === "Request" ? "flex" : "hidden"} gap-3`}>
+                  <Button variant="destructive" className="rounded-full" onClick={() => clickreject()}>
                     Reject
                   </Button>
-                  <Button className="mx-4" onClick={() => clickaccept()}>
+                  <Button className="rounded-full bg-emerald-600 text-white hover:bg-emerald-700" onClick={() => clickaccept()}>
                     Accept
                   </Button>
                 </CardFooter>
@@ -196,6 +200,6 @@ export default function Page({
           </div>
         );
       })}
-    </>
+    </div>
   );
 }

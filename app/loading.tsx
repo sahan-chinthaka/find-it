@@ -1,6 +1,7 @@
 function LoadingScreen() {
   return (
-    <div style={{ height: "500px" }}>
+    <div className="page-wrap mx-auto mt-6 max-w-xl" style={{ minHeight: "320px" }}>
+      <p className="text-center text-sm font-medium text-slate-500">Preparing your workspace...</p>
       <div className="loader-animation"></div>
     </div>
   );

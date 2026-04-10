@@ -103,7 +103,11 @@ function NewFoundPage() {
   }
 
   return (
-    <div className="max-w-[450px] mx-auto p-4 rounded shadow-md">
+    <div className="page-wrap mx-auto max-w-2xl">
+      <div className="mb-6">
+        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">Create Report</p>
+        <h1 className="mt-1 text-3xl font-bold text-slate-900">Report a Found Item</h1>
+      </div>
       <Form {...form}>
         <form ref={formElem} onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormField
@@ -169,8 +173,9 @@ function NewFoundPage() {
                   <PopoverTrigger asChild>
                     <FormControl>
                       <Button
+                        type="button"
                         variant={"outline"}
-                        className={cn("w-[240px] pl-3 text-left font-normal", !field.value && "text-muted-foreground")}
+                        className={cn("w-full pl-3 text-left font-normal", !field.value && "text-muted-foreground")}
                       >
                         {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
                         <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
@@ -217,7 +222,7 @@ function NewFoundPage() {
             )}
           />
           <div hidden={suggestions.length === 0}>
-            <ul>
+            <ul className="rounded-xl border border-slate-200 bg-white p-2 shadow-sm">
               {suggestions.map((suggestion) => {
                 const placePrediction = suggestion.placePrediction;
                 if (!placePrediction) {
@@ -226,7 +231,7 @@ function NewFoundPage() {
 
                 return (
                   <li
-                    className="bg-slate-50 p-1 m-1 rounded-lg"
+                    className="m-1 cursor-pointer rounded-lg border border-transparent bg-slate-50 p-2 text-sm transition hover:border-teal-200 hover:bg-teal-50"
                     onClick={async () => {
                       try {
                         const place = placePrediction.toPlace();
@@ -268,7 +273,7 @@ function NewFoundPage() {
           </div>
           <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAP_API as string}>
             {location && (
-              <div className="w-full h-80">
+              <div className="h-80 w-full overflow-hidden rounded-2xl border border-slate-200">
                 <Map streetViewControl={false} gestureHandling="none" center={location} defaultZoom={10} mapId="DEMO_MAP_ID">
                   <AdvancedMarker position={location}></AdvancedMarker>
                 </Map>
@@ -282,7 +287,7 @@ function NewFoundPage() {
             </FormControl>
             <FormMessage />
           </FormItem>
-          <Button disabled={disable} type="submit">
+          <Button disabled={disable} type="submit" className="w-full rounded-full bg-teal-600 text-white hover:bg-teal-700">
             Submit
           </Button>
         </form>

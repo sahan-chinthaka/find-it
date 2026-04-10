@@ -50,19 +50,24 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div>
-      <div>
-        <ScrollArea className="h-full">
-          <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
-            <div className="flex items-center justify-between space-y-2">
-              <h2 className="text-3xl font-bold tracking-tight">Hi, Welcome back 👋</h2>
-            </div>
-            <Tabs defaultValue="overview" className="space-y-4">
-              <TabsContent value="overview" className="space-y-4">
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                  <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">Total lost item</CardTitle>
+    <div className="page-wrap space-y-6">
+      <div className="rounded-3xl border border-orange-200/70 bg-gradient-to-r from-orange-50 via-amber-50 to-emerald-50 p-6 shadow-inner">
+        <p className="text-sm font-semibold uppercase tracking-[0.16em] text-orange-700">Control Center</p>
+        <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-900 md:text-4xl">Hi, welcome back</h2>
+        <p className="mt-2 max-w-2xl text-sm text-slate-600 md:text-base">
+          Track every report, review possible matches, and help reunite lost items with their owners.
+        </p>
+      </div>
+
+      <ScrollArea className="h-full">
+        <div className="flex-1 space-y-4">
+          <Tabs defaultValue="overview" className="space-y-4">
+            <TabsContent value="overview" className="space-y-4">
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                <Card className="glass-card border-orange-200/70">
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Total lost items</CardTitle>
+                    <div className="rounded-lg bg-orange-100 p-2 text-orange-700">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 24 24"
@@ -71,19 +76,20 @@ export default function HomePage() {
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         strokeWidth="2"
-                        className="h-4 w-4 text-muted-foreground"
+                        className="h-4 w-4"
                       >
                         <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
                       </svg>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-2xl font-bold">{lostmcount}</div>
-                      <p className="text-xs text-muted-foreground"></p>
-                    </CardContent>
-                  </Card>
-                  <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">Total Found Item</CardTitle>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-3xl font-bold text-slate-900">{lostmcount}</div>
+                  </CardContent>
+                </Card>
+                <Card className="glass-card border-teal-200/70">
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Total found items</CardTitle>
+                    <div className="rounded-lg bg-teal-100 p-2 text-teal-700">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 24 24"
@@ -92,21 +98,22 @@ export default function HomePage() {
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         strokeWidth="2"
-                        className="h-4 w-4 text-muted-foreground"
+                        className="h-4 w-4"
                       >
                         <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
                         <circle cx="9" cy="7" r="4" />
                         <path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
                       </svg>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-2xl font-bold">{foundmcount}</div>
-                      <p className="text-xs text-muted-foreground"></p>
-                    </CardContent>
-                  </Card>
-                  <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">Total Suggestion Items</CardTitle>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-3xl font-bold text-slate-900">{foundmcount}</div>
+                  </CardContent>
+                </Card>
+                <Card className="glass-card border-sky-200/70">
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Suggestion items</CardTitle>
+                    <div className="rounded-lg bg-sky-100 p-2 text-sky-700">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 24 24"
@@ -115,20 +122,21 @@ export default function HomePage() {
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         strokeWidth="2"
-                        className="h-4 w-4 text-muted-foreground"
+                        className="h-4 w-4"
                       >
                         <rect width="20" height="14" x="2" y="5" rx="2" />
                         <path d="M2 10h20" />
                       </svg>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-2xl font-bold">{suggestItemcount}</div>
-                      <p className="text-xs text-muted-foreground"></p>
-                    </CardContent>
-                  </Card>
-                  <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">Total founded Item</CardTitle>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-3xl font-bold text-slate-900">{suggestItemcount}</div>
+                  </CardContent>
+                </Card>
+                <Card className="glass-card border-emerald-200/70">
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Items reunited</CardTitle>
+                    <div className="rounded-lg bg-emerald-100 p-2 text-emerald-700">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 24 24"
@@ -137,50 +145,49 @@ export default function HomePage() {
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         strokeWidth="2"
-                        className="h-4 w-4 text-muted-foreground"
+                        className="h-4 w-4"
                       >
                         <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
                       </svg>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-3xl font-bold text-slate-900">0</div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              <div className="grid w-full gap-4 xl:grid-cols-2">
+                <div className="flex flex-col">
+                  <Card className="glass-card">
+                    <CardHeader className="flex items-start gap-2 border-b border-slate-100">
+                      <CardTitle className="text-base font-semibold">Accept Items</CardTitle>
                     </CardHeader>
-                    <CardContent>
-                      <div className="text-2xl font-bold">0</div>
-                      <p className="text-xs text-muted-foreground"></p>
+                    <CardContent className="p-0">
+                      <ScrollArea className="h-[340px] w-full p-4">
+                        <Acceptable />
+                        <Approvetable />
+                      </ScrollArea>
                     </CardContent>
                   </Card>
                 </div>
-
-                <div className="grid w-full  xl:grid-cols-2 ">
-                  <div className="flex flex-col xl:col-span-1 col-span-1 ml-5 ">
-                    <Card>
-                      <CardHeader className="flex items-start gap-4">
-                        <CardTitle className="text-base">Accept Items</CardTitle>
-                      </CardHeader>
-                      <CardContent className="p-0">
-                        <ScrollArea className="h-[300px] w-full rounded-md border p-4">
-                          <Acceptable />
-                          <Approvetable />
-                        </ScrollArea>
-                      </CardContent>
-                    </Card>
-                  </div>
-                  <div className="flex flex-col xl:col-span-1 col-span-1 ml-5 ">
-                    <Card>
-                      <CardHeader className="flex items-start gap-4">
-                        <CardTitle className="text-base">Suggestion Items</CardTitle>
-                      </CardHeader>
-                      <CardContent className="p-0">
-                        <ScrollArea className="h-[300px] w-full rounded-md border p-4">
-                          <SuggestTable />
-                        </ScrollArea>
-                      </CardContent>
-                    </Card>
-                  </div>
+                <div className="flex flex-col">
+                  <Card className="glass-card">
+                    <CardHeader className="flex items-start gap-2 border-b border-slate-100">
+                      <CardTitle className="text-base font-semibold">Suggestion Items</CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-0">
+                      <ScrollArea className="h-[340px] w-full p-4">
+                        <SuggestTable />
+                      </ScrollArea>
+                    </CardContent>
+                  </Card>
                 </div>
-              </TabsContent>
-            </Tabs>
-          </div>
-        </ScrollArea>
-      </div>
+              </div>
+            </TabsContent>
+          </Tabs>
+        </div>
+      </ScrollArea>
     </div>
   );
 }
