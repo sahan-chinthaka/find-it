@@ -23,7 +23,7 @@ export default function Navbar() {
   const userImage = session?.user?.image ?? "https://github.com/shadcn.png";
 
   return (
-    <div className="sticky top-0 z-40 border-b border-white/50 bg-white/60 backdrop-blur-lg">
+    <div className="fi-frosted sticky top-0 z-40 border-b border-white/50 bg-white/70 backdrop-blur-sm">
       <nav className="w-full">
         <div className="mx-auto flex max-w-[1200px] items-center px-4 md:px-8">
           <div className="flex items-center justify-between py-3 md:py-4 md:block">
