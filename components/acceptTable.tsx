@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 
 interface SuggestItems {
@@ -44,10 +44,7 @@ export default function Acceptable() {
                         stages: item.stages,
                       };
 
-                      setSuggestItems((prevItems) => [
-                        ...prevItems,
-                        suggestItem,
-                      ]);
+                      setSuggestItems((prevItems) => [...prevItems, suggestItem]);
                     })
                     .catch((error) => {
                       console.error("Error fetching data:", error);
@@ -67,10 +64,7 @@ export default function Acceptable() {
     <ul className="divide-y">
       {suggestItems.map((item) => (
         <div key={item.id}>
-          <li
-            className="flex items-center justify-between p-4 hover:bg-gray-100"
-            key={item.id}
-          >
+          <li className="flex items-center justify-between p-4 hover:bg-gray-100" key={item.id}>
             <Link
               href={{
                 pathname: "/accept",
@@ -97,9 +91,7 @@ export default function Acceptable() {
                     />
                     <div className="grid gap-1.5">
                       <h3 className="font-semibold">{item.name}</h3>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">
-                        {item.description}
-                      </p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">{item.description}</p>
                     </div>
                   </div>
                   <div className="flex flex-col items-center justify-center col-span-2 ml-5 ">

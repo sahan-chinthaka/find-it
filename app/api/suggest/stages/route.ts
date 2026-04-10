@@ -5,10 +5,10 @@ export async function POST(req: NextRequest) {
   const data = await req.json();
 
   const updatesuggestItem = await prisma.suggestItem.update({
-    where: { 
-        id: data.id, 
+    where: {
+      id: data.id,
     },
-    data: { stages: data.stages }, 
-});
+    data: { stages: data.stages },
+  });
   return NextResponse.json(updatesuggestItem);
 }

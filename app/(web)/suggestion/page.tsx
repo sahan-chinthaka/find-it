@@ -1,18 +1,8 @@
 "use client";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem
-} from "@/components/ui/carousel";
+import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle
-} from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useEffect, useState } from "react";
 
@@ -129,11 +119,7 @@ export default function page({
                     <CarouselContent>
                       {item.images.map((image, index) => (
                         <CarouselItem key={index}>
-                          <img
-                            src={image}
-                            alt="@shadcn"
-                            className="w-100 h-100"
-                          />
+                          <img src={image} alt="@shadcn" className="w-100 h-100" />
                         </CarouselItem>
                       ))}
                     </CarouselContent>
@@ -152,16 +138,12 @@ export default function page({
                           <TabsTrigger value="Location">Location</TabsTrigger>
                         </TabsList>
 
-                        <TabsContent value="Details">
-                          {item.description}
-                        </TabsContent>
+                        <TabsContent value="Details">{item.description}</TabsContent>
                         <TabsContent value="Contact">
                           <section className="flex items-start  py-6">
                             <div className="container flex flex-col items-center px-4 space-y-4">
                               <div className="flex flex-col items-center space-y-2 text-center">
-                                <p className="text-lg font-medium text-gray-500 dark:text-gray-400">
-                                  Do not have access yet
-                                </p>
+                                <p className="text-lg font-medium text-gray-500 dark:text-gray-400">Do not have access yet</p>
                               </div>
                             </div>
                           </section>
@@ -170,9 +152,7 @@ export default function page({
                           <section className="flex items-start  py-6">
                             <div className="container flex flex-col items-center px-4 space-y-4">
                               <div className="flex flex-col items-center space-y-2 text-center">
-                                <p className="text-lg font-medium text-gray-500 dark:text-gray-400">
-                                  Do not have access yet
-                                </p>
+                                <p className="text-lg font-medium text-gray-500 dark:text-gray-400">Do not have access yet</p>
                               </div>
                             </div>
                           </section>
@@ -180,10 +160,7 @@ export default function page({
                       </Tabs>
                     </CardContent>
                     <CardFooter>
-                      <Button
-                        variant="destructive"
-                        onClick={() => notmindbtn()}
-                      >
+                      <Button variant="destructive" onClick={() => notmindbtn()}>
                         Not mine
                       </Button>
                       <Button className="mx-4" onClick={() => thismindbtn()}>

@@ -22,8 +22,8 @@ export async function GET(req: NextRequest) {
         where: {
           foundItemId: item.id,
           stages: {
-            in: ["Request", "Accept"]
-          }
+            in: ["Request", "Accept"],
+          },
         },
       });
 

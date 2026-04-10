@@ -41,7 +41,6 @@ export async function GET(req: NextRequest) {
   }
 }
 
-
 function flattenArrayOfArrays(arrayOfArrays: any[]) {
   return arrayOfArrays.reduce((acc, curr) => acc.concat(curr), []);
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 interface SuggestItems {
   image: string;
@@ -41,10 +41,7 @@ export default function SuggestTable() {
                         sugessId: item.id,
                       };
 
-                      setSuggestItems((prevItems) => [
-                        ...prevItems,
-                        suggestItem,
-                      ]);
+                      setSuggestItems((prevItems) => [...prevItems, suggestItem]);
                     })
                     .catch((error) => {
                       console.error("Error fetching data:", error);
@@ -66,9 +63,7 @@ export default function SuggestTable() {
         <section className="flex items-start  py-6">
           <div className="container flex flex-col items-center px-4 space-y-4">
             <div className="flex flex-col items-center space-y-2 text-center">
-              <p className="text-lg font-medium text-gray-500 dark:text-gray-400">
-                No have suggestion item
-              </p>
+              <p className="text-lg font-medium text-gray-500 dark:text-gray-400">No have suggestion item</p>
             </div>
 
             <img
@@ -82,10 +77,7 @@ export default function SuggestTable() {
         </section>
       ) : (
         suggestItems.map((item) => (
-          <li
-            className="flex items-center justify-between p-4 hover:bg-gray-100"
-            key={item.id}
-          >
+          <li className="flex items-center justify-between p-4 hover:bg-gray-100" key={item.id}>
             {/* <Link href={`suggestion/${item.id}`}> */}
             <Link
               href={{
@@ -110,9 +102,7 @@ export default function SuggestTable() {
                 />
                 <div className="grid gap-1.5">
                   <h3 className="font-semibold">{item.name}</h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    {item.description}
-                  </p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">{item.description}</p>
                 </div>
               </div>
             </Link>

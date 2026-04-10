@@ -83,10 +83,12 @@ async function runWithImages(imageParts: any[], found_data: FoundData) {
       "x-goog-api-key": GEMINI_KEY || "",
     },
     body: JSON.stringify({
-      contents: [{
-        role: "user",
-        parts: [{ text: prompt }, ...imageParts],
-      }],
+      contents: [
+        {
+          role: "user",
+          parts: [{ text: prompt }, ...imageParts],
+        },
+      ],
       generationConfig: {
         temperature: 1,
         topK: 40,
@@ -101,10 +103,13 @@ async function runWithImages(imageParts: any[], found_data: FoundData) {
     throw new Error(`Gemini API error: ${JSON.stringify(error)}`);
   }
 
-  const data = await response.json() as any;
+  const data = (await response.json()) as any;
   const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
 
-  return text.split("\n").map((a: string) => a.replace(/\*\-/g, "").trim()).filter((a: string) => a.length > 0);
+  return text
+    .split("\n")
+    .map((a: string) => a.replace(/\*\-/g, "").trim())
+    .filter((a: string) => a.length > 0);
 }
 
 export async function PUT(req: NextRequest) {

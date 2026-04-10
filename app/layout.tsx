@@ -3,25 +3,25 @@ import { Toaster } from "@/components/ui/toaster";
 import type { Metadata } from "next";
 import "./globals.css";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-	title: "FindIt",
-	description: "AI based lost thing founding helper",
+  title: "FindIt",
+  description: "AI based lost thing founding helper",
 };
 
 export default function RootLayout({
-	children,
+  children,
 }: Readonly<{
-	children: React.ReactNode;
+  children: React.ReactNode;
 }>) {
-	return (
-		<html lang="en">
-			<body suppressHydrationWarning={true}>
-				<Navbar />
-				<main>{children}</main>
-				<Toaster />
-			</body>
-		</html>
-	);
+  return (
+    <html lang="en">
+      <body suppressHydrationWarning={true}>
+        <Navbar />
+        <main>{children}</main>
+        <Toaster />
+      </body>
+    </html>
+  );
 }

@@ -20,7 +20,6 @@ interface LostData {
   type: string;
 }
 
-
 async function makeSuggestions(keywords: string[], lost_id: string) {
   const data = await prisma.foundItem.findMany({
     where: {
@@ -82,10 +81,12 @@ async function runWithImages(imageParts: any[], lost_data: LostData) {
       "x-goog-api-key": GEMINI_KEY || "",
     },
     body: JSON.stringify({
-      contents: [{
-        role: "user",
-        parts: [{ text: prompt }, ...imageParts],
-      }],
+      contents: [
+        {
+          role: "user",
+          parts: [{ text: prompt }, ...imageParts],
+        },
+      ],
       generationConfig: {
         temperature: 1,
         topK: 40,
@@ -100,10 +101,13 @@ async function runWithImages(imageParts: any[], lost_data: LostData) {
     throw new Error(`Gemini API error: ${JSON.stringify(error)}`);
   }
 
-  const data = await response.json() as any;
+  const data = (await response.json()) as any;
   const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
 
-  return text.split("\n").map((a: string) => a.trim()).filter((a: string) => a.length > 0);
+  return text
+    .split("\n")
+    .map((a: string) => a.trim())
+    .filter((a: string) => a.length > 0);
 }
 
 export async function PUT(req: NextRequest) {

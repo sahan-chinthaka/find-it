@@ -1,19 +1,9 @@
 "use client";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem
-} from "@/components/ui/carousel";
+import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle
-} from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface LostItems {
@@ -38,7 +28,7 @@ export default function Page({
   searchParams: {
     id: string;
     sugessId: string;
-    stages:string;
+    stages: string;
   };
 }) {
   let count = 1;
@@ -86,7 +76,7 @@ export default function Page({
       });
   };
 
-  const clickreject=()=>{
+  const clickreject = () => {
     const data = {
       id: searchParams.sugessId,
       stages: "Wrong",
@@ -112,9 +102,9 @@ export default function Page({
       .catch((error) => {
         console.error("There was a problem with the fetch operation:", error);
       });
-  }
+  };
 
-  const clickaccept=()=>{
+  const clickaccept = () => {
     const data = {
       id: searchParams.sugessId,
       stages: "Accept",
@@ -140,7 +130,7 @@ export default function Page({
       .catch((error) => {
         console.error("There was a problem with the fetch operation:", error);
       });
-  }
+  };
   return (
     <>
       {lostItems.map((item) => {
@@ -167,22 +157,16 @@ export default function Page({
                     <TabsList className="grid w-full grid-cols-3 mb-5">
                       <TabsTrigger value="Details">Details</TabsTrigger>
                       <TabsTrigger value="Location">Location</TabsTrigger>
-                      <TabsTrigger value="Contact">
-                        Request person details
-                      </TabsTrigger>
+                      <TabsTrigger value="Contact">Request person details</TabsTrigger>
                     </TabsList>
 
-                    <TabsContent value="Details">
-                      {item.description}
-                    </TabsContent>
+                    <TabsContent value="Details">{item.description}</TabsContent>
 
                     <TabsContent value="Location">
                       <section className="flex items-start py-6">
                         <div className="container flex flex-col items-center px-4 space-y-4">
                           <div className="flex flex-col items-center space-y-2 text-center">
-                            <p className="text-lg font-medium text-gray-500 dark:text-gray-400">
-                              Do not have access yet
-                            </p>
+                            <p className="text-lg font-medium text-gray-500 dark:text-gray-400">Do not have access yet</p>
                           </div>
                         </div>
                       </section>
@@ -190,17 +174,22 @@ export default function Page({
 
                     <TabsContent value="Contact">
                       <ul>
-                        <li><img src={userdeatils[0]?.image} alt="user profile image" /></li>
+                        <li>
+                          <img src={userdeatils[0]?.image} alt="user profile image" />
+                        </li>
                         <li className="mt-4">Name: {userdeatils[0]?.name}</li>
                         <li className="mt-1">Email: {userdeatils[0]?.email}</li>
                       </ul>
-                      
                     </TabsContent>
                   </Tabs>
                 </CardContent>
-                <CardFooter className={ searchParams.stages === "Request" ? "block" : "hidden"}>
-                  <Button variant="destructive" onClick={() => clickreject()}>Reject</Button>
-                  <Button className="mx-4" onClick={() => clickaccept()}>Accept</Button>
+                <CardFooter className={searchParams.stages === "Request" ? "block" : "hidden"}>
+                  <Button variant="destructive" onClick={() => clickreject()}>
+                    Reject
+                  </Button>
+                  <Button className="mx-4" onClick={() => clickaccept()}>
+                    Accept
+                  </Button>
                 </CardFooter>
               </Card>
             </div>
