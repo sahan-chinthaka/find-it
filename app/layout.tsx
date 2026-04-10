@@ -1,8 +1,9 @@
+import Navbar from "@/components/navbar";
+import { Toaster } from "@/components/ui/toaster";
 import type { Metadata } from "next";
 import "./globals.css";
-import { Toaster } from "@/components/ui/toaster";
-import Script from "next/script";
-import Navbar from "@/components/navbar";
+
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
 	title: "FindIt",

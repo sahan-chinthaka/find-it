@@ -1,13 +1,12 @@
 "use client";
-import * as React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import * as React from "react";
 
+import Acceptable from "@/components/acceptTable";
+import Approvetable from "@/components/approvetable";
+import SuggestTable from "@/components/suggestTable";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
-import Link from "next/link";
-import SuggestTable from "@/components/suggestTable";
-import Approvetable from "@/components/approvetable";
-import Acceptable from "@/components/acceptTable";
 import { useState } from "react";
 
 export default function HomePage() {
