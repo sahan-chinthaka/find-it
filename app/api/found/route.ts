@@ -2,11 +2,13 @@ import { authOptions } from "@/lib/auth-config";
 import prisma from "@/lib/prisma";
 import { distance } from "@/lib/utils";
 import { FoundItemSchema } from "@/schema/found";
-import { GoogleGenerativeAI, Part } from "@google/generative-ai";
 import { put } from "@vercel/blob";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+
+const GEMINI_KEY = process.env.GEMINI_KEY;
+const GEMINI_MODEL = "gemini-3-flash-preview";
 
 const FoundItemApiSchema = FoundItemSchema.extend({
   date: z.coerce.date(),
@@ -17,8 +19,6 @@ interface FoundData {
   description: string;
   type: string;
 }
-
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_KEY as string);
 
 async function makeSugestions(keywords: string[], found_id: string) {
   const data = await prisma.lostItem.findMany({
@@ -73,15 +73,38 @@ async function makeSugestions(keywords: string[], found_id: string) {
   return final;
 }
 
-async function runWithImages(imageParts: Part[], found_data: FoundData) {
-  const model = genAI.getGenerativeModel({ model: "gemini-pro-vision" });
-
+async function runWithImages(imageParts: any[], found_data: FoundData) {
   const prompt = `Please create a list of keywords to help find this lost item. Consider the title, description, images (including any recognizable text). Emphasize unique or distinguishing features. Title is '${found_data.title}'. Description is '${found_data.description}'. Make keywords singular and do not use any character to seperate keywords. Do not generate unnecessary keywords. Give each keyword in a new line. You can add brands, colors, serial numbers if you can clearly identify. Here are some images of lost item. Limit the keywords to 10.`;
 
-  const result = await model.generateContent([prompt, ...imageParts]);
-  const response = result.response;
-  const text = response.text();
-  return text.split("\n").map((a) => a.replace(/\*\-/g, "").trim());
+  const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-goog-api-key": GEMINI_KEY || "",
+    },
+    body: JSON.stringify({
+      contents: [{
+        role: "user",
+        parts: [{ text: prompt }, ...imageParts],
+      }],
+      generationConfig: {
+        temperature: 1,
+        topK: 40,
+        topP: 0.95,
+        maxOutputTokens: 8192,
+      },
+    }),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(`Gemini API error: ${JSON.stringify(error)}`);
+  }
+
+  const data = await response.json() as any;
+  const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+
+  return text.split("\n").map((a: string) => a.replace(/\*\-/g, "").trim()).filter((a: string) => a.length > 0);
 }
 
 export async function PUT(req: NextRequest) {
@@ -91,7 +114,7 @@ export async function PUT(req: NextRequest) {
     if (!foundId) throw new Error("FoundId not found");
 
     const imagesUpload = [];
-    const imageParts: Part[] = [];
+    const imageParts: any[] = [];
 
     let count = 0;
     for (const [k, v] of form.entries()) {
@@ -107,35 +130,48 @@ export async function PUT(req: NextRequest) {
           );
           imageParts.push({
             inlineData: {
-              data: buffer.toString("base64"),
               mimeType: file.type,
+              data: buffer.toString("base64"),
             },
           });
         }
       }
     }
-    let suggestions = null;
-    if (imageParts.length >= 1) {
-      const keywords = await runWithImages(imageParts, {
-        title: form.get("title") as string,
-        description: form.get("description") as string,
-        type: form.get("type") as string,
-      });
-      suggestions = makeSugestions(keywords, foundId as string);
+
+    if (imagesUpload.length > 0) {
       const p = await Promise.all(imagesUpload);
       await prisma.foundItem.update({
         where: {
           id: foundId?.toString(),
         },
         data: {
-          keywords: {
-            create: keywords.map((a) => ({ value: a })),
-          },
           images: p.map((a) => a.url),
         },
       });
     }
-    await suggestions;
+
+    if (imageParts.length >= 1) {
+      try {
+        const keywords = await runWithImages(imageParts, {
+          title: form.get("title") as string,
+          description: form.get("description") as string,
+          type: form.get("type") as string,
+        });
+        await prisma.foundItem.update({
+          where: {
+            id: foundId?.toString(),
+          },
+          data: {
+            keywords: {
+              create: keywords.map((a: string) => ({ value: a })),
+            },
+          },
+        });
+        await makeSugestions(keywords, foundId as string);
+      } catch (aiError) {
+        console.error("Found AI enrichment failed:", aiError);
+      }
+    }
 
     return NextResponse.json({ message: "done" });
   } catch (e: any) {
