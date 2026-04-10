@@ -7,7 +7,65 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
 export async function GET(req: NextRequest) {
-  return NextResponse.json(await getServerSession(authOptions));
+  const session = await getServerSession(authOptions);
+
+  if (!session?.user?.uid) {
+    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+  }
+
+  // Get session data
+  const sessionData = await getServerSession(authOptions);
+
+  // Get user statistics
+  const user = await prisma.user.findUnique({
+    where: { id: session.user.uid },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      image: true,
+      uname: true,
+      createdAt: true,
+      _count: {
+        select: {
+          LostItem: true,
+          FoundItem: true,
+        },
+      },
+    },
+  });
+
+  if (!user) {
+    return NextResponse.json({ error: "User not found" }, { status: 404 });
+  }
+
+  // Get count of successful matches (SuggestItem with stage = "Done")
+  const successfulMatches = await prisma.suggestItem.count({
+    where: {
+      OR: [{ LostItem: { userId: session.user.uid } }, { FoundItem: { userId: session.user.uid } }],
+      stages: "Done",
+    },
+  });
+
+  // Get count of pending suggestions
+  const pendingMatches = await prisma.suggestItem.count({
+    where: {
+      OR: [{ LostItem: { userId: session.user.uid } }, { FoundItem: { userId: session.user.uid } }],
+      stages: { in: ["Pending", "Request"] },
+    },
+  });
+
+  return NextResponse.json({
+    ...sessionData,
+    user: {
+      ...user,
+      stats: {
+        itemsReported: user._count.LostItem + user._count.FoundItem,
+        successfulMatches,
+        pendingMatches,
+      },
+    },
+  });
 }
 
 export async function POST(req: NextRequest) {

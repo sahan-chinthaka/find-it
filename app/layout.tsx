@@ -1,9 +1,9 @@
 import Navbar from "@/components/navbar";
-import Providers from "./providers";
 import { Toaster } from "@/components/ui/toaster";
 import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
 import "./globals.css";
+import Providers from "./providers";
 
 export const dynamic = "force-dynamic";
 

@@ -82,6 +82,12 @@ function NewLostPage() {
   }, [autocompleteSessionToken, locationQuery]);
 
   function onSubmit(values: z.infer<typeof LostItemSchema>) {
+    // Validate that at least one place has been selected
+    if (!places || places.length === 0) {
+      alert("Please select at least one location where you might have lost the item");
+      return;
+    }
+
     setDisable(true);
     fetch("/api/lost", {
       method: "POST",
@@ -89,27 +95,45 @@ function NewLostPage() {
     })
       .then((res) => res.json())
       .then((res) => {
-        console.log(res);
-        if (formElem.current) {
-          const form_data = new FormData(formElem.current);
-
-          if (res.id) {
-            form_data.append("id", res["id"]);
-            const lostId = res.id;
-            fetch("/api/lost", {
-              method: "PUT",
-              body: form_data,
-            })
-              .then((res) => res.json())
-              .then((res) => {
-                console.log(res);
-                window.location.href = "/lost";
-              })
-              .finally(() => {
-                setDisable(false);
-              });
+        if (res.id) {
+          // Validate form element exists
+          if (!formElem.current) {
+            console.error("Form element not found");
+            alert("Error uploading images. Please try again.");
+            setDisable(false);
+            return;
           }
+
+          const form_data = new FormData(formElem.current);
+          form_data.append("id", res.id);
+
+          fetch("/api/lost", {
+            method: "PUT",
+            body: form_data,
+          })
+            .then((res) => res.json())
+            .then((res) => {
+              if (res.id) {
+                window.location.href = "/lost";
+              } else {
+                alert("Error uploading images. Item was created but images failed to upload.");
+                setDisable(false);
+              }
+            })
+            .catch((error) => {
+              console.error("Error uploading images:", error);
+              alert("Error uploading images. Item was created but images failed to upload.");
+              setDisable(false);
+            });
+        } else {
+          alert(res.message || "Error creating lost item");
+          setDisable(false);
         }
+      })
+      .catch((error) => {
+        console.error("Error submitting form:", error);
+        alert("Error submitting form. Please try again.");
+        setDisable(false);
       });
   }
 
@@ -354,9 +378,7 @@ export default function Test() {
         <div className="rounded-3xl border border-orange-200/70 bg-gradient-to-r from-orange-50 via-amber-50 to-emerald-50 p-6 shadow-inner">
           <p className="text-sm font-semibold uppercase tracking-[0.16em] text-orange-700">Create Report</p>
           <h1 className="mt-2 text-3xl font-bold tracking-tight text-slate-900 md:text-4xl">Report a Lost Item</h1>
-          <p className="mt-2 max-w-2xl text-sm text-slate-600 md:text-base">
-            Please log in before creating a lost item report.
-          </p>
+          <p className="mt-2 max-w-2xl text-sm text-slate-600 md:text-base">Please log in before creating a lost item report.</p>
           <div className="mt-5">
             <Link href="/api/auth/signin">
               <Button className="rounded-full bg-orange-600 px-6 text-white hover:bg-orange-700">Login to Continue</Button>

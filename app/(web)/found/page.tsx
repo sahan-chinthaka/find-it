@@ -1,10 +1,12 @@
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { authOptions } from "@/lib/auth-config";
 import { cookiesToString } from "@/lib/utils";
-import { PlusIcon } from "lucide-react";
+import { PlusIcon, SearchIcon } from "lucide-react";
 import { getServerSession } from "next-auth";
 import { cookies } from "next/headers";
 import Link from "next/link";
+import FoundItemsClient from "./found-client";
 
 export const dynamic = "force-dynamic";
 
@@ -55,35 +57,7 @@ async function FoundPage() {
         </Link>
       </div>
 
-      <section className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {foundItems.map((a: any) => (
-          <Link key={a.id} href={"/found/" + a.id}>
-            <div className="group h-full overflow-hidden rounded-2xl border border-slate-200 bg-white/80 shadow-sm transition hover:-translate-y-1 hover:border-teal-300 hover:shadow-lg">
-              {Array.isArray(a.images) && a.images[0] ? (
-                <img
-                  alt={a.title}
-                  className="h-60 w-full object-cover"
-                  height={300}
-                  src={a.images[0]}
-                  style={{
-                    aspectRatio: "400/300",
-                    objectFit: "cover",
-                  }}
-                  width={400}
-                />
-              ) : (
-                <div className="flex h-60 items-center justify-center bg-slate-100 text-sm text-slate-500">
-                  No image available
-                </div>
-              )}
-              <div className="space-y-1 bg-white/95 p-4">
-                <h3 className="line-clamp-1 font-semibold text-lg text-slate-900 md:text-xl">{a.title}</h3>
-                <p className="text-sm text-slate-500">Tap to view full details</p>
-              </div>
-            </div>
-          </Link>
-        ))}
-      </section>
+      <FoundItemsClient initialItems={foundItems} />
     </div>
   );
 }

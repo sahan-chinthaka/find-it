@@ -4,7 +4,7 @@ import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carouse
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface FoundItems {
   name: string;
@@ -23,12 +23,12 @@ export default function page({
     sugessId: string;
   };
 }) {
+  const hasInitialized = useRef(false);
   const [foundItems, setFoundItems] = useState<FoundItems[]>([]);
 
-  let count = 1;
-
   useEffect(() => {
-    if (count == 1) {
+    if (!hasInitialized.current && searchParams.id) {
+      hasInitialized.current = true;
       fetch(`/api/found/${searchParams.id}`)
         .then((response) => response.json())
         .then((data) => {
@@ -40,7 +40,7 @@ export default function page({
             id: id,
             type: type,
             location: location,
-            images: images, // Assuming you want images as a string
+            images: images,
           };
           setFoundItems((prevItems) => [...prevItems, item]);
         })
@@ -48,8 +48,7 @@ export default function page({
           console.error("Error fetching data:", error);
         });
     }
-    count++;
-  }, []);
+  }, [searchParams.id]);
 
   function notmindbtn() {
     const data = {
@@ -70,8 +69,6 @@ export default function page({
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
-        console.log("Request sent successfully");
-        console.log(response);
         window.location.href = "/";
       })
       .catch((error) => {
@@ -98,8 +95,6 @@ export default function page({
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
-        console.log("Request sent successfully");
-        console.log(response);
         window.location.href = "/";
       })
       .catch((error) => {

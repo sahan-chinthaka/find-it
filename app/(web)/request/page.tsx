@@ -1,6 +1,6 @@
 "use client";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -31,12 +31,28 @@ export default function Page({
     stages: string;
   };
 }) {
-  let count = 1;
+  const hasInitialized = useRef(false);
   const [lostItems, setlostItems] = useState<LostItems[]>([]);
   const [userdeatils, setuserdeatils] = useState<User[]>([]);
 
+  const userdata = (id: string) => {
+    fetch(`/api/user/${id}`)
+      .then((response) => response.json())
+      .then((data) => {
+        const { name, email, image } = data;
+        const user = {
+          name: name,
+          email: email,
+          id: id,
+          image: image,
+        };
+        setuserdeatils((prevItems) => [...prevItems, user]);
+      });
+  };
+
   useEffect(() => {
-    if (count == 1) {
+    if (!hasInitialized.current && searchParams.id) {
+      hasInitialized.current = true;
       fetch(`/api/lost/${searchParams.id}`)
         .then((response) => response.json())
         .then((data) => {
@@ -57,24 +73,7 @@ export default function Page({
           console.error("Error fetching data:", error);
         });
     }
-
-    count++;
-  }, []);
-
-  const userdata = (id: string) => {
-    fetch(`/api/user/${id}`)
-      .then((response) => response.json())
-      .then((data) => {
-        const { name, email, image } = data;
-        const user = {
-          name: name,
-          email: email,
-          id: id,
-          image: image,
-        };
-        setuserdeatils((prevItems) => [...prevItems, user]);
-      });
-  };
+  }, [searchParams.id]);
 
   const clickreject = () => {
     const data = {
@@ -95,8 +94,6 @@ export default function Page({
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
-        console.log("Request sent successfully");
-        console.log(response);
         window.location.href = "/";
       })
       .catch((error) => {
@@ -123,8 +120,6 @@ export default function Page({
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
-        console.log("Request sent successfully");
-        console.log(response);
         window.location.href = "/";
       })
       .catch((error) => {

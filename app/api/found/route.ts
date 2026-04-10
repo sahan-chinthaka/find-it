@@ -121,7 +121,9 @@ export async function PUT(req: NextRequest) {
   try {
     const form = await req.formData();
     const foundId = form.get("foundId");
-    if (!foundId) throw new Error("FoundId not found");
+    if (!foundId) {
+      return NextResponse.json({ error: true, message: "FoundId is required" }, { status: 400 });
+    }
 
     const imagesUpload = [];
     const imageParts: any[] = [];
@@ -180,25 +182,32 @@ export async function PUT(req: NextRequest) {
         await makeSugestions(keywords, foundId as string);
       } catch (aiError) {
         console.error("Found AI enrichment failed:", aiError);
+        // Silently fail - item was created successfully, AI enrichment is just a bonus
       }
     }
 
-    return NextResponse.json({ message: "done" });
+    return NextResponse.json({ message: "done", id: foundId }, { status: 200 });
   } catch (e: any) {
-    return NextResponse.json({ error: true, message: e.message });
+    console.error("Error uploading found item:", e);
+    return NextResponse.json({ error: true, message: "Failed to upload found item" }, { status: 500 });
   }
 }
 
 export async function POST(req: NextRequest) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.uid) {
+      return NextResponse.json({ error: true, message: "Unauthorized" }, { status: 401 });
+    }
+
     const json = await req.json();
     const data = FoundItemApiSchema.parse(json);
     const itemDate = parseDateOnly(data.date);
-    const session = await getServerSession(authOptions);
 
-    if (!session?.user.uid) throw new Error("User not found");
-    if (!json.place || !json.place.place_id || !json.place.description || !json.place.lat || !json.place.lat)
-      throw new Error("Place not found");
+    // Validate place data
+    if (!json.place || !json.place.place_id || !json.place.description || !json.place.lat || !json.place.lng) {
+      return NextResponse.json({ error: true, message: "Valid place information is required" }, { status: 400 });
+    }
 
     const found = await prisma.foundItem.create({
       data: {
@@ -221,9 +230,13 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    return NextResponse.json({ message: "done", foundId: found.id });
+    return NextResponse.json({ message: "done", foundId: found.id }, { status: 201 });
   } catch (e: any) {
-    return NextResponse.json({ error: true, message: e.message });
+    if (e instanceof z.ZodError) {
+      return NextResponse.json({ error: true, message: "Validation error", details: e.issues }, { status: 400 });
+    }
+    console.error("Error creating found item:", e);
+    return NextResponse.json({ error: true, message: "Failed to create found item" }, { status: 500 });
   }
 }
 

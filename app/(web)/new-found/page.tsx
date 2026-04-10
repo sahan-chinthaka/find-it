@@ -11,8 +11,8 @@ import { Loader } from "@googlemaps/js-api-loader";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AdvancedMarker, APIProvider, Map } from "@vis.gl/react-google-maps";
 import { format } from "date-fns";
-import Link from "next/link";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -73,6 +73,12 @@ function NewFoundPage() {
   }, [autocompleteSessionToken, locationQuery]);
 
   function onSubmit(values: z.infer<typeof FoundItemSchema>) {
+    // Validate location has been selected with coordinates
+    if (!location || !location.lat || !location.lng) {
+      alert("Please select a valid location from the suggestions");
+      return;
+    }
+
     setDisable(true);
     fetch("/api/found", {
       method: "POST",
@@ -80,11 +86,17 @@ function NewFoundPage() {
     })
       .then((res) => res.json())
       .then((res) => {
-        console.log(res);
-        if (res.message == "done") {
-          const form_data = new FormData(formElem.current ?? undefined);
+        if (res.message == "done" && res.foundId) {
+          // Validate form element exists
+          if (!formElem.current) {
+            console.error("Form element not found");
+            alert("Error uploading images. Please try again.");
+            setDisable(false);
+            return;
+          }
+
+          const form_data = new FormData(formElem.current);
           form_data.append("foundId", res.foundId);
-          const foundId = res.foundId;
 
           fetch("/api/found", {
             method: "PUT",
@@ -92,11 +104,27 @@ function NewFoundPage() {
           })
             .then((res) => res.json())
             .then((res) => {
-              console.log(res);
-              window.location.href = "/found";
+              if (res.id) {
+                window.location.href = "/found";
+              } else {
+                alert("Error uploading images. Item was created but images failed to upload.");
+                setDisable(false);
+              }
             })
-            .finally(() => setDisable(false));
+            .catch((error) => {
+              console.error("Error uploading images:", error);
+              alert("Error uploading images. Item was created but images failed to upload.");
+              setDisable(false);
+            });
+        } else {
+          alert(res.message || "Error creating found item");
+          setDisable(false);
         }
+      })
+      .catch((error) => {
+        console.error("Error submitting form:", error);
+        alert("Error submitting form. Please try again.");
+        setDisable(false);
       });
   }
 

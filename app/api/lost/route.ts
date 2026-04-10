@@ -117,13 +117,14 @@ async function runWithImages(imageParts: any[], lost_data: LostData) {
 
 export async function PUT(req: NextRequest) {
   const data = await req.formData();
+
   const lostID = data.get("id");
 
   const imagesUpload = [];
   const imageParts: any[] = [];
   try {
     if (!lostID) {
-      throw new Error("Lost id is not present");
+      return NextResponse.json({ error: true, message: "Lost item ID is required" }, { status: 400 });
     }
 
     let count = 0;
@@ -180,59 +181,69 @@ export async function PUT(req: NextRequest) {
         await makeSuggestions(keywords, lostID as string);
       } catch (aiError) {
         console.error("Lost AI enrichment failed:", aiError);
+        // Silently fail - item was created successfully, AI enrichment is just a bonus
       }
     }
 
-    return NextResponse.json({ message: "done" });
+    return NextResponse.json({ message: "done", id: lostID }, { status: 200 });
   } catch (e) {
-    return NextResponse.json({ error: true, message: e });
+    console.error("Error uploading lost item:", e);
+    return NextResponse.json({ error: true, message: "Failed to upload lost item" }, { status: 500 });
   }
 }
 
 export async function POST(req: NextRequest) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.uid) {
+      return NextResponse.json({ error: true, message: "Unauthorized" }, { status: 401 });
+    }
+
     const json = await req.json();
     const data = LostItemApiSchema.parse(json);
     const itemDate = parseDateOnly(data.date);
-    const session = await getServerSession(authOptions);
 
-    if (session?.user.uid) {
-      const item = await prisma.lostItem.create({
-        data: {
-          title: data.title,
-          description: data.description,
-          type: data.type,
-          location: data.location,
-          date: itemDate,
-          userId: session?.user.uid,
-          places: {
-            create: json.places.map((a: any) => ({
-              place_key: a.place_id,
-              description: a.description,
-              lat: a.lat,
-              lng: a.lng,
-            })),
-          },
-        },
-      });
-      return NextResponse.json(item);
+    // Validate places array
+    if (!json.places || !Array.isArray(json.places) || json.places.length === 0) {
+      return NextResponse.json({ error: true, message: "At least one valid place is required" }, { status: 400 });
     }
-    return NextResponse.json({ error: true, message: "No user" });
+
+    const item = await prisma.lostItem.create({
+      data: {
+        title: data.title,
+        description: data.description,
+        type: data.type,
+        location: data.location,
+        date: itemDate,
+        userId: session.user.uid,
+        places: {
+          create: json.places.map((a: any) => ({
+            place_key: a.place_id,
+            description: a.description,
+            lat: a.lat,
+            lng: a.lng,
+          })),
+        },
+      },
+    });
+    return NextResponse.json(item, { status: 201 });
   } catch (e) {
     if (e instanceof z.ZodError) {
-      return NextResponse.json({ error: true, message: e.issues });
+      return NextResponse.json({ error: true, message: "Validation error", details: e.issues }, { status: 400 });
     } else if (e instanceof SyntaxError) {
-      return NextResponse.json({ error: true, message: "Can't parse JSON input" });
-    } else {
-      return NextResponse.json({ error: true, message: e });
+      return NextResponse.json({ error: true, message: "Invalid JSON provided" }, { status: 400 });
     }
+    console.error("Error creating lost item:", e);
+    return NextResponse.json({ error: true, message: "Failed to create lost item" }, { status: 500 });
   }
 }
 export async function GET() {
   const session = await getServerSession(authOptions);
 
   try {
-    if (!session?.user.uid) throw new Error("User not found");
+    if (!session?.user?.uid) {
+      return NextResponse.json({ error: true, message: "Unauthorized" }, { status: 401 });
+    }
 
     const items = await prisma.lostItem.findMany({
       where: {
@@ -240,8 +251,9 @@ export async function GET() {
       },
     });
 
-    return NextResponse.json(items);
+    return NextResponse.json(items, { status: 200 });
   } catch (e: any) {
-    return NextResponse.json({ error: true, message: e.message });
+    console.error("Error fetching lost items:", e);
+    return NextResponse.json({ error: true, message: "Failed to fetch lost items" }, { status: 500 });
   }
 }

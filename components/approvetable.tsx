@@ -1,8 +1,8 @@
 "use client";
 
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
 import { Button } from "./ui/button";
 
 interface SuggestItems {
@@ -26,36 +26,17 @@ export default function Approvetable() {
       return;
     }
 
-    fetch("/api/suggest/request")
+    fetch("/api/suggest/approve-optimized")
       .then((response) => response.json())
       .then((data) => {
-        const lostItemIds = data.flattenedArray;
-        setSuggestItems([]);
-
-        lostItemIds.map((item: any) => {
-          fetch(`/api/found/${item.foundItemId}`)
-            .then((response) => response.json())
-            .then((data) => {
-              const { id, title, description, images } = data;
-              const suggestItem = {
-                image: images.toString(),
-                name: title,
-                description: description,
-                id: id,
-                sugessId: item.id,
-                stages: item.stages,
-                lostitemid: item.lostItemId,
-              };
-
-              setSuggestItems((prevItems) => [...prevItems, suggestItem]);
-            })
-            .catch((error) => {
-              console.error("Error fetching data:", error);
-            });
-        });
+        setSuggestItems((data.items || []).map((item: any) => ({
+          ...item,
+          lostitemid: item.id,
+        })));
       })
       .catch((error) => {
-        console.error("Error fetching user data:", error);
+        console.error("Error fetching suggestions:", error);
+        setSuggestItems([]);
       });
   }, [isAuthenticated]);
 
