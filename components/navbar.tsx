@@ -53,6 +53,9 @@ export default function Navbar() {
               <li className="rounded-full px-3 py-2 font-medium text-slate-600 transition hover:bg-white hover:text-orange-600">
                 <Link href="/found">Found</Link>
               </li>
+              <li className="rounded-full px-3 py-2 font-medium text-slate-600 transition hover:bg-white hover:text-purple-600">
+                <Link href="/how-it-works">How It Works</Link>
+              </li>
               <li className="rounded-full bg-orange-500 px-3 py-2 font-medium text-white shadow-sm transition hover:bg-orange-600">
                 <Link href="/new-lost">Post Item</Link>
               </li>
