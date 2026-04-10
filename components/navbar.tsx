@@ -1,21 +1,19 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { Menu, Search } from "lucide-react";
+import { Menu } from "lucide-react";
 
 import Link from "next/link";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { signOut } from "next-auth/react";
 
 export default function Navbar() {
   const [state, setState] = useState(false);
@@ -55,11 +53,7 @@ export default function Navbar() {
             </div>
           </div>
 
-          <div
-            className={`flex-1 justify-self-center pb-3 mt-8 md:block md:pb-0 md:mt-0 ${
-              state ? "block" : "hidden"
-            }`}
-          >
+          <div className={`flex-1 justify-self-center pb-3 mt-8 md:block md:pb-0 md:mt-0 ${state ? "block" : "hidden"}`}>
             <ul className="items-center justify-end space-y-8 md:flex md:space-x-6 md:space-y-0">
               <li className="text-gray-600 hover:text-indigo-600">
                 <Link href="/lost">Lost</Link>

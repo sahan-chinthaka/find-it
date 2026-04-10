@@ -1,19 +1,9 @@
 "use client";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem
-} from "@/components/ui/carousel";
+import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle
-} from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface LostItems {
@@ -168,24 +158,17 @@ export default function Page({
                     <TabsList className="grid w-full grid-cols-3 mb-5">
                       <TabsTrigger value="Details">Details</TabsTrigger>
                       <TabsTrigger value="Location">Location</TabsTrigger>
-                      <TabsTrigger value="Contact">
-                        Posted person details
-                      </TabsTrigger>
+                      <TabsTrigger value="Contact">Posted person details</TabsTrigger>
                     </TabsList>
 
-                    <TabsContent value="Details">
-                      {item.description}
-                    </TabsContent>
+                    <TabsContent value="Details">{item.description}</TabsContent>
 
                     <TabsContent value="Location">{item.location}</TabsContent>
 
                     <TabsContent value="Contact">
                       <ul>
                         <li>
-                          <img
-                            src={userdeatils[0]?.image}
-                            alt="user profile image"
-                          />
+                          <img src={userdeatils[0]?.image} alt="user profile image" />
                         </li>
                         <li className="mt-4">Name: {userdeatils[0]?.name}</li>
                         <li className="mt-1">Email: {userdeatils[0]?.email}</li>

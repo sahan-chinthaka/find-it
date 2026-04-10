@@ -9,6 +9,7 @@ export const dynamic = "force-dynamic";
 export default async function LostPage() {
   const c = await cookies();
   const founds = await fetch(process.env.BACKEND + "/api/lost/", {
+    cache: "no-store",
     headers: {
       Cookie: cookiesToString(c.getAll()),
     },
@@ -29,17 +30,23 @@ export default async function LostPage() {
         {data.map((a: any) => (
           <Link key={a.id} href={"/lost/" + a.id}>
             <div className="border-dashed border border-gray-400 rounded-lg dark:border-gray-800 dark:hover:border-gray-50">
-              <img
-                alt="Product 1"
-                className="object-cover w-full h-60"
-                height={300}
-                src={a.images[0]}
-                style={{
-                  aspectRatio: "400/300",
-                  objectFit: "cover",
-                }}
-                width={400}
-              />
+              {Array.isArray(a.images) && a.images[0] ? (
+                <img
+                  alt={a.title}
+                  className="object-cover w-full h-60"
+                  height={300}
+                  src={a.images[0]}
+                  style={{
+                    aspectRatio: "400/300",
+                    objectFit: "cover",
+                  }}
+                  width={400}
+                />
+              ) : (
+                <div className="flex h-60 items-center justify-center bg-slate-100 text-sm text-slate-500 dark:bg-slate-900">
+                  No image available
+                </div>
+              )}
               <div className="bg-white p-4 dark:bg-gray-950">
                 <h3 className="font-semibold text-lg md:text-xl">{a.title}</h3>
               </div>

@@ -14,8 +14,6 @@ export default function HomePage() {
   const [lostmcount, setlostmcount] = useState<number>(0);
   const [foundmcount, setfoundmcount] = useState<number>(0);
 
-
-
   let gocount = 1;
   React.useEffect(() => {
     if (gocount == 1) {
@@ -36,23 +34,20 @@ export default function HomePage() {
           }
         });
 
-        fetch("/api/lost/")
+      fetch("/api/lost/")
         .then((response) => response.json())
         .then((data) => {
-          setlostmcount(data.length)
-        })
+          setlostmcount(data.length);
+        });
 
-        fetch("/api/found/")
+      fetch("/api/found/")
         .then((response) => response.json())
         .then((data) => {
-          setfoundmcount(data.length)
-        })
-
-
+          setfoundmcount(data.length);
+        });
     }
     gocount++;
   }, []);
-
 
   return (
     <div>
@@ -60,18 +55,14 @@ export default function HomePage() {
         <ScrollArea className="h-full">
           <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
             <div className="flex items-center justify-between space-y-2">
-              <h2 className="text-3xl font-bold tracking-tight">
-                Hi, Welcome back 👋
-              </h2>
+              <h2 className="text-3xl font-bold tracking-tight">Hi, Welcome back 👋</h2>
             </div>
             <Tabs defaultValue="overview" className="space-y-4">
               <TabsContent value="overview" className="space-y-4">
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                   <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">
-                        Total lost item
-                      </CardTitle>
+                      <CardTitle className="text-sm font-medium">Total lost item</CardTitle>
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 24 24"
@@ -92,9 +83,7 @@ export default function HomePage() {
                   </Card>
                   <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">
-                        Total Found Item
-                      </CardTitle>
+                      <CardTitle className="text-sm font-medium">Total Found Item</CardTitle>
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 24 24"
@@ -117,9 +106,7 @@ export default function HomePage() {
                   </Card>
                   <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">
-                        Total Suggestion Items
-                      </CardTitle>
+                      <CardTitle className="text-sm font-medium">Total Suggestion Items</CardTitle>
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 24 24"
@@ -141,9 +128,7 @@ export default function HomePage() {
                   </Card>
                   <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">
-                      Total founded Item
-                      </CardTitle>
+                      <CardTitle className="text-sm font-medium">Total founded Item</CardTitle>
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 24 24"
@@ -168,9 +153,7 @@ export default function HomePage() {
                   <div className="flex flex-col xl:col-span-1 col-span-1 ml-5 ">
                     <Card>
                       <CardHeader className="flex items-start gap-4">
-                        <CardTitle className="text-base">
-                          Accept Items
-                        </CardTitle>
+                        <CardTitle className="text-base">Accept Items</CardTitle>
                       </CardHeader>
                       <CardContent className="p-0">
                         <ScrollArea className="h-[300px] w-full rounded-md border p-4">
@@ -183,9 +166,7 @@ export default function HomePage() {
                   <div className="flex flex-col xl:col-span-1 col-span-1 ml-5 ">
                     <Card>
                       <CardHeader className="flex items-start gap-4">
-                        <CardTitle className="text-base">
-                          Suggestion Items
-                        </CardTitle>
+                        <CardTitle className="text-base">Suggestion Items</CardTitle>
                       </CardHeader>
                       <CardContent className="p-0">
                         <ScrollArea className="h-[300px] w-full rounded-md border p-4">
