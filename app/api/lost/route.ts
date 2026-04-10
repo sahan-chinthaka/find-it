@@ -7,9 +7,14 @@ import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
-const LostItemApiSchema = LostItemSchema.extend({
-  date: z.coerce.date(),
+const LostItemApiSchema = LostItemSchema.omit({ date: true }).extend({
+  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
 });
+
+function parseDateOnly(value: string) {
+  const [year, month, day] = value.split("-").map(Number);
+  return new Date(Date.UTC(year, month - 1, day, 12, 0, 0));
+}
 
 const GEMINI_KEY = process.env.GEMINI_KEY;
 const GEMINI_MODEL = "gemini-3-flash-preview";
@@ -188,6 +193,7 @@ export async function POST(req: NextRequest) {
   try {
     const json = await req.json();
     const data = LostItemApiSchema.parse(json);
+    const itemDate = parseDateOnly(data.date);
     const session = await getServerSession(authOptions);
 
     if (session?.user.uid) {
@@ -197,7 +203,7 @@ export async function POST(req: NextRequest) {
           description: data.description,
           type: data.type,
           location: data.location,
-          date: data.date,
+          date: itemDate,
           userId: session?.user.uid,
           places: {
             create: json.places.map((a: any) => ({

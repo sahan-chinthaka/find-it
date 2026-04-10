@@ -1,20 +1,16 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { itemTypes } from "@/lib/item-types";
-import { cn } from "@/lib/utils";
 import { FoundItemSchema } from "@/schema/found";
 import { Loader } from "@googlemaps/js-api-loader";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AdvancedMarker, APIProvider, Map } from "@vis.gl/react-google-maps";
 import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -78,7 +74,7 @@ function NewFoundPage() {
     setDisable(true);
     fetch("/api/found", {
       method: "POST",
-      body: JSON.stringify({ ...values, place: location }),
+      body: JSON.stringify({ ...values, date: format(values.date, "yyyy-MM-dd"), place: location }),
     })
       .then((res) => res.json())
       .then((res) => {
@@ -167,31 +163,27 @@ function NewFoundPage() {
             control={form.control}
             name="date"
             render={({ field }) => (
-              <FormItem className="flex flex-col">
+              <FormItem>
                 <FormLabel>Found date</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        type="button"
-                        variant={"outline"}
-                        className={cn("w-full pl-3 text-left font-normal", !field.value && "text-muted-foreground")}
-                      >
-                        {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
-                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={field.value}
-                      onSelect={field.onChange}
-                      disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
+                <FormControl>
+                  <Input
+                    type="date"
+                    value={field.value ? format(field.value, "yyyy-MM-dd") : ""}
+                    min="1900-01-01"
+                    max={format(new Date(), "yyyy-MM-dd")}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      if (!value) {
+                        return;
+                      }
+                      field.onChange(new Date(`${value}T00:00:00`));
+                    }}
+                    onBlur={field.onBlur}
+                    disabled={field.disabled}
+                    name={field.name}
+                    ref={field.ref}
+                  />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
