@@ -11,16 +11,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { itemTypes } from "@/lib/item-types";
 import { cn } from "@/lib/utils";
 import { LostItemSchema } from "@/schema/lost";
+import { Loader } from "@googlemaps/js-api-loader";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { APIProvider, Map, Marker } from "@vis.gl/react-google-maps";
+import { AdvancedMarker, APIProvider, Map } from "@vis.gl/react-google-maps";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { Fragment, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import usePlacesAutocomplete, { LatLng, getGeocode, getLatLng } from "use-places-autocomplete";
 import { z } from "zod";
-import { Loader } from "@googlemaps/js-api-loader";
-import { useRouter } from "next/navigation";
 
 export interface Place {
 	place_id: string;
@@ -31,11 +29,10 @@ export interface Place {
 
 function NewLostPage() {
 	const [places, setPlaces] = useState<Place[]>([]);
-	const router = useRouter();
-
-	const autoComplete = usePlacesAutocomplete({
-		debounce: 300,
-	});
+	const [locationQuery, setLocationQuery] = useState("");
+	const [suggestions, setSuggestions] = useState<google.maps.places.AutocompleteSuggestion[]>([]);
+	const [autocompleteSessionToken, setAutocompleteSessionToken] =
+		useState<google.maps.places.AutocompleteSessionToken | null>(null);
 
 	const form = useForm<z.infer<typeof LostItemSchema>>({
 		resolver: zodResolver(LostItemSchema),
@@ -50,7 +47,40 @@ function NewLostPage() {
 
 	const formElem = useRef<HTMLFormElement | null>(null);
 	const [disable, setDisable] = useState(false);
-	const [location, setLocation] = useState<LatLng>();
+	const [location, setLocation] = useState<google.maps.LatLngLiteral>();
+
+	useEffect(() => {
+		setAutocompleteSessionToken(new google.maps.places.AutocompleteSessionToken());
+	}, []);
+
+	useEffect(() => {
+		if (!autocompleteSessionToken || !locationQuery.trim()) {
+			setSuggestions([]);
+			return;
+		}
+
+		let isActive = true;
+		const timeoutId = setTimeout(async () => {
+			try {
+				const result = await google.maps.places.AutocompleteSuggestion.fetchAutocompleteSuggestions({
+					input: locationQuery,
+					sessionToken: autocompleteSessionToken,
+				});
+				if (isActive) {
+					setSuggestions(result.suggestions ?? []);
+				}
+			} catch {
+				if (isActive) {
+					setSuggestions([]);
+				}
+			}
+		}, 300);
+
+		return () => {
+			isActive = false;
+			clearTimeout(timeoutId);
+		};
+	}, [autocompleteSessionToken, locationQuery]);
 
 	function onSubmit(values: z.infer<typeof LostItemSchema>) {
 		setDisable(true);
@@ -177,7 +207,7 @@ function NewLostPage() {
 										placeholder="Ex: One Galle Face..."
 										value={field.value}
 										onChange={(e) => {
-											autoComplete.setValue(e.target.value);
+											setLocationQuery(e.target.value);
 											field.onChange(e);
 										}}
 										onBlur={field.onBlur}
@@ -190,31 +220,68 @@ function NewLostPage() {
 							</FormItem>
 						)}
 					/>
-					<div hidden={autoComplete.suggestions.status != "OK"}>
+					<div hidden={suggestions.length === 0}>
 						<ul>
-							{autoComplete.suggestions.data.map(({ place_id, description }) => (
-								<li
-									className="bg-slate-50 p-1 m-1 rounded-lg"
-									onClick={async () => {
-										autoComplete.setValue("", false);
-										form.setValue("location", "");
-										autoComplete.clearSuggestions();
-										const result = await getGeocode({ address: description });
-										const position = getLatLng(result[0]);
-										setPlaces((d) => [...d, { place_id, description, lat: position.lat, lng: position.lng }]);
-										setLocation(position);
-									}}
-									key={place_id}
-								>
-									{description}
-								</li>
-							))}
+							{suggestions.map((suggestion) => {
+								const placePrediction = suggestion.placePrediction;
+								if (!placePrediction) {
+									return null;
+								}
+
+								return (
+									<li
+										className="bg-slate-50 p-1 m-1 rounded-lg"
+										onClick={async () => {
+											try {
+												const place = placePrediction.toPlace();
+												if (!place) {
+													console.error("Place object is null");
+													return;
+												}
+
+												await place.fetchFields({
+													fields: ["displayName", "formattedAddress", "location"],
+												});
+
+												if (!place.location) {
+													return;
+												}
+
+												const description =
+													place.formattedAddress ?? place.displayName ?? placePrediction.text?.text ?? "";
+												const place_id = placePrediction.placeId;
+												const position = {
+													lat: place.location.lat(),
+													lng: place.location.lng(),
+												};
+
+												setPlaces((d) => {
+													if (d.some((p) => p.place_id === place_id)) {
+														return d;
+													}
+													return [...d, { place_id, description, lat: position.lat, lng: position.lng }];
+												});
+												setLocation(position);
+												form.setValue("location", "");
+												setLocationQuery("");
+												setSuggestions([]);
+												setAutocompleteSessionToken(new google.maps.places.AutocompleteSessionToken());
+											} catch (error) {
+												console.error("Error fetching place details:", error);
+											}
+										}}
+										key={placePrediction.placeId}
+									>
+										{placePrediction.text?.text ?? ""}
+									</li>
+								);
+							})}
 						</ul>
 					</div>
 					<APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAP_API as string}>
 						<div className="w-full h-80" hidden={!location}>
-							<Map gestureHandling="none" center={location} defaultZoom={10} disableDefaultUI>
-								<Marker position={location} />
+							<Map gestureHandling="none" center={location} defaultZoom={10} disableDefaultUI mapId="DEMO_MAP_ID">
+								<AdvancedMarker position={location} />
 							</Map>
 						</div>
 					</APIProvider>

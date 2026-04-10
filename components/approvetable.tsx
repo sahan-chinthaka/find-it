@@ -3,7 +3,6 @@
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { Button } from "./ui/button";
-import { s } from "vitest/dist/reporters-P7C2ytIv.js";
 
 interface SuggestItems {
   image: string;
